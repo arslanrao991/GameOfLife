@@ -9,6 +9,12 @@ public class main
 {
     public static void main(String[] args)
     {
+        GameOfLife game = new GameOfLife();
+
+
+
+
+
         Scanner myInput = new Scanner( System.in );
         Grid grid = new Grid();
 
@@ -17,7 +23,7 @@ public class main
         grid.print();
         int a;
         System.out.print( "Enter first integer: " );
-        a = myInput.nextInt();
+        //a = myInput.nextInt();
 
         for(int i=0;i<10;i++)
         {
