@@ -27,4 +27,6 @@ public class Cell
         this.isAlive=status;
     }
 
+
+
 }
