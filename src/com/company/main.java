@@ -10,12 +10,8 @@ public class main
     public static void main(String[] args)
     {
         GameOfLife game = new GameOfLife();
-
-
-
-
-
-        Scanner myInput = new Scanner( System.in );
+        game.initGame();
+        /*Scanner myInput = new Scanner( System.in );
         Grid grid = new Grid();
 
         grid.grid[5][5].setCellStatus(true);
@@ -32,7 +28,7 @@ public class main
                 grid.updateNeighbours(grid.grid[i][j]);
             }
         }
-        grid.print();
+        grid.print();*/
     }
 
 }

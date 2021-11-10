@@ -1,5 +1,8 @@
 package com.company;
 
+import Database.Database;
+import swing.swing;
+
 public class GameOfLife
 {
     Canvas canvas;
@@ -12,6 +15,10 @@ public class GameOfLife
         this.canvas = new Canvas();
         this.grid = new Grid();
         this.counter = 0;
+        Database db = new Database();
+        db.connect();
+        swing swing = new swing();
+        swing.Example();
     }
     void start()
     {
