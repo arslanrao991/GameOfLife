@@ -6,12 +6,12 @@ import java.awt.*;
 public class Board extends JPanel
 {
     static final int cols = 1000;
-    static final int rows = 15;
+    static final int rows = 35;
     static final int originX = 0;
     static final int originY = 100;
-    static final int cellSide = 100;
-    static final int width = 20;
-    static final int height = 20;
+
+    static final int width = 10;
+    static final int height = 10;
 
 
 

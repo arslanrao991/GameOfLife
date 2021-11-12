@@ -1,43 +1,55 @@
 package com.company;
 
-import Database.Database;
-import swing.swing;
+import swing.*;
 
 public class GameOfLife
 {
     Canvas canvas;
     Grid grid;
     int counter;
+    int zoom;
+    int speed;
     boolean gameStatus;
 
-    void initGame()
+    public void initGame()
     {
-        this.canvas = new Canvas();
         this.grid = new Grid();
+        this.canvas = new Canvas(this.grid);
+        this.speed = Global.defaultSpeed;
+        this.zoom = Global.defaultZoom;
         this.counter = 0;
-        Database db = new Database();
+
+        /*Database db = new Database();
         db.connect();
         swing swing = new swing();
-        swing.Example();
+        swing.Example();*/
     }
     void start()
     {
         this.gameStatus = true;
-        //will add functionality
     }
     void stop()
     {
         this.gameStatus = false;
-        //will add functionality
     }
     void reset()
     {
-        //will add functionality
+        stop();
+        canvas.gameGrid.clear();
     }
     boolean isGameRunning()
     {
         return this.gameStatus;
     }
+    void setZoom(int value)
+    {
+        this.zoom=value;
+    }
+    void setSpeed(int value)
+    {
+        this.speed=value;
+    }
+
     void startStopButtonClick()
     {
         if(isGameRunning())
@@ -47,23 +59,19 @@ public class GameOfLife
     }
     void nextButtonClick()
     {
+        counter++;
         //will add functionality
     }
-    void speedChanges()
+    void speedChanges(Event e)
     {
-        //will add functionality
+        setSpeed(e.getSpeed());
     }
-    void zoomChanged()
+    void zoomChanged(Event e)
     {
-        //will add functionality
+        setZoom(e.getZoom());
     }
     void resetButtonClicked()
     {
-        //will add functionality
+        reset();
     }
-    void setCellSize(int value)
-    {
-        canvas.setCellSize(value);
-    }
-
 }

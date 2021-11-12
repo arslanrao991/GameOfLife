@@ -25,6 +25,5 @@ public class swing
         f.add(board);
         f.setVisible(true);//making the frame visible
 
-
     }
 }

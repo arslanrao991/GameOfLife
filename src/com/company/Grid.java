@@ -1,14 +1,21 @@
 package com.company;
+import java.util.*;
+
 public class Grid implements CellGrid
 {
-    int cellRows;
-    int cellColumns;
+    public int cellRows;
+    public int cellColumns;
     public Cell[][] grid;
+    public Hashtable currentShape; //stores alive cells
+    public Hashtable newShape; //stores new alive cells after counter
 
-    Grid()
+    public Grid()
     {
-        this.cellRows=10;
-        this.cellColumns = 10;
+        this.cellRows = Global.gridRows;
+        this.cellColumns = Global.gridCols;
+        this.currentShape = new Hashtable();
+        this.newShape = new Hashtable();
+
         this.grid=new Cell[this.cellRows][this.cellColumns];
         for(int i=0;i<this.cellRows;i++)
         {
@@ -18,43 +25,9 @@ public class Grid implements CellGrid
             }
         }
     }
-    public void updateNeighbours(Cell c)
-    {
-        int neighboursCount=0;
-        if(c.x_axis != 0 && c.y_axis != 0 && grid[c.x_axis-1][c.y_axis-1].isAlive())
-            neighboursCount++;
-        if(c.x_axis != 0 && grid[c.x_axis-1][c.y_axis].isAlive())
-            neighboursCount++;
-        if(c.x_axis != 0 && c.y_axis+1 != cellColumns && grid[c.x_axis-1][c.y_axis+1].isAlive())
-            neighboursCount++;
-        if(c.x_axis+1 != cellRows && c.y_axis != 0 && grid[c.x_axis+1][c.y_axis-1].isAlive())
-            neighboursCount++;
-        if(c.x_axis+1 != cellRows && grid[c.x_axis+1][c.y_axis].isAlive())
-            neighboursCount++;
-        if(c.x_axis+1 != cellRows && c.y_axis+1 != cellColumns && grid[c.x_axis+1][c.y_axis+1].isAlive())
-            neighboursCount++;
-        if(c.y_axis != 0 && grid[c.x_axis][c.y_axis-1].isAlive())
-            neighboursCount++;
-        if(c.y_axis+1 != cellColumns && grid[c.x_axis][c.y_axis+1].isAlive())
-            neighboursCount++;
-        c.neighbours=neighboursCount;
-    }
-    public void print()
-    {
-        for(int i=0;i<this.cellRows;i++)
-        {
-            for(int j=0;j<this.cellColumns;j++)
-            {
-                System.out.print(this.grid[i][j].x_axis + ", " + this.grid[i][j].y_axis + " {"+ this.grid[i][j].neighbours+", "+ this.grid[i] [j].isAlive()+"}");
-                System.out.print(" | ");
-            }
-            System.out.print("\n");
-        }
-
-    }
 
     @Override
-    public boolean getCell(int x, int y)
+    public boolean getCellStatus(int x, int y)
     {
         return grid[x][y].isAlive();
     }
@@ -62,18 +35,33 @@ public class Grid implements CellGrid
     @Override
     public void setCell(int x, int y, boolean status)
     {
-        grid[x][y].setCellStatus(status);
+        try
+        {
+            Cell c = grid[x][y];
+            if (status) {
+                c.setCellStatus(true);
+                currentShape.put(c, c);
+            } else {
+                currentShape.remove(c, c);
+            }
+        }
+        catch(ArrayIndexOutOfBoundsException error)
+        {
+            //do nothing
+        }
     }
 
     @Override
     public void resizeGrid(int x, int y)
     {
-        //will add functionality
+        clear();
     }
 
     public void clear()
     {
         grid = null;
+        currentShape = new Hashtable();
+        newShape = new Hashtable();
         grid=new Cell[this.cellRows][this.cellColumns];
         for(int i=0;i<this.cellRows;i++)
         {
@@ -81,6 +69,83 @@ public class Grid implements CellGrid
             {
                 this.grid[i][j] = new Cell(i, j);
             }
+        }
+    }
+
+    public void next()
+    {
+        Cell c;
+        int x, y;
+
+        newShape.clear();
+        Enumeration<Cell> enumerate = currentShape.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            c.neighbours = 0;
+        }
+
+        enumerate = currentShape.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            x = c.x_axis;
+            y = c.y_axis;
+            addNeighbour( x-1, y-1 );
+            addNeighbour( x, y-1 );
+            addNeighbour( x+1, y-1 );
+            addNeighbour( x-1, y );
+            addNeighbour( x+1, y );
+            addNeighbour( x-1, y+1 );
+            addNeighbour( x, y+1 );
+            addNeighbour( x+1, y+1 );
+        }
+
+        enumerate = currentShape.keys();
+        //game of life Rule# 1
+        while (enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            if(c.getNeighbours()!= 3 && c.getNeighbours()!=2)
+            {
+                currentShape.remove(c);
+            }
+        }
+
+        enumerate = newShape.keys();
+        //game of life Rule# 2
+        while (enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            if(c.getNeighbours()==3)
+            {
+                setCell(c.x_axis, c.y_axis, true);
+            }
+        }
+
+
+
+    }
+
+    void addNeighbour(int x, int y)
+    {
+        try
+        {
+            Cell c = (Cell) newShape.get(grid[x][y]);
+            if(c == null)
+            {
+                c = grid[x][y];
+                c.neighbours = 1;
+                newShape.put(c, c);
+            }
+            else
+            {
+                c.neighbours++;
+            }
+        }
+        catch (ArrayIndexOutOfBoundsException error)
+        {
+            //do nothing
         }
     }
 }

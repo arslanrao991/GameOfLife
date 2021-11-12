@@ -6,7 +6,7 @@ public class Cell
     int neighbours;
     boolean isAlive;
 
-    Cell(int x, int y)
+    public Cell(int x, int y)
     {
         this.x_axis=x;
         this.y_axis=y;
