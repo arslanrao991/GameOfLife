@@ -34,7 +34,7 @@ public class DATABASE
 
             x_axis = temp.x_axis;
             y_axis = temp.y_axis;
-            String sql = "Insert Into CELLS Values ('"+val+"','"+x_axis+"','"+y_axis+"')";
+            String sql = "Insert Into CELLS Values ('"+val+"','"+x_axis+"','"+y_axis+"')";  //RUN THE SQL COMMAND
 
             try
             {
