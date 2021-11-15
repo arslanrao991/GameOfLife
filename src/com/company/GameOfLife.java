@@ -1,11 +1,11 @@
 package com.company;
 
-import swing.*;
+import UI.*;
 
 public class GameOfLife
 {
-    Canvas canvas;
-    Grid grid;
+    //Canvas canvas;
+    public Grid grid;
     int counter;
     int zoom;
     int speed;
@@ -13,10 +13,10 @@ public class GameOfLife
 
     public void initGame()
     {
-        this.grid = new Grid();
-        this.canvas = new Canvas(this.grid);
-        this.speed = Global.defaultSpeed;
-        this.zoom = Global.defaultZoom;
+        this.grid = Factory.getGrid();
+        //this.canvas = new Canvas(this.grid);
+        this.speed = Factory.defaultSpeed;
+        this.zoom = Factory.defaultZoom;
         this.counter = 0;
 
         /*Database db = new Database();
@@ -24,6 +24,7 @@ public class GameOfLife
         swing swing = new swing();
         swing.Example();*/
     }
+
     void start()
     {
         this.gameStatus = true;
@@ -35,7 +36,6 @@ public class GameOfLife
     void reset()
     {
         stop();
-        canvas.gameGrid.clear();
     }
     boolean isGameRunning()
     {
@@ -62,13 +62,13 @@ public class GameOfLife
         counter++;
         //will add functionality
     }
-    void speedChanges(Event e)
+    void speedChanges(int value)
     {
-        setSpeed(e.getSpeed());
+        setSpeed(value);
     }
-    void zoomChanged(Event e)
+    void zoomChanged(int value)
     {
-        setZoom(e.getZoom());
+        setZoom(value);
     }
     void resetButtonClicked()
     {

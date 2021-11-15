@@ -1,18 +1,24 @@
-import com.company.Cell;
+import Database.Database;
+import UI.GameOfLifeControls;
+import UI.GameOfLifeFrame;
 import com.company.GameOfLife;
-
-import java.util.Scanner;
-import java.util.*;
-import java.io.BufferedReader;
-import java.io.Console;
-import java.util.Scanner;
-import com.company.*;
 
 public class main
 {
     public static void main(String[] args)
     {
-        Cell c = new Cell(1, 1);
+
+        GameOfLife game = new GameOfLife();
+        game.initGame();
+
+        GameOfLifeFrame g = new GameOfLifeFrame();
+        g.Frame();
+
+
+
+//        System.out.println(con);
+
+        /*Cell c = new Cell(1, 1);
         System.out.print(c);
 
         Hashtable a=new Hashtable();
@@ -28,7 +34,7 @@ public class main
 
 
         GameOfLife game = new GameOfLife();
-        game.initGame();
+        game.initGame();*/
 
         /*Scanner myInput = new Scanner( System.in );
         Grid grid = new Grid();

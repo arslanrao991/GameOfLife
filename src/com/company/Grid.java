@@ -8,13 +8,15 @@ public class Grid implements CellGrid
     public Cell[][] grid;
     public Hashtable currentShape; //stores alive cells
     public Hashtable newShape; //stores new alive cells after counter
+    int generation;
 
     public Grid()
     {
-        this.cellRows = Global.gridRows;
-        this.cellColumns = Global.gridCols;
+        this.cellRows = Factory.gridRows;
+        this.cellColumns = Factory.gridCols;
         this.currentShape = new Hashtable();
         this.newShape = new Hashtable();
+        this.generation=0;
 
         this.grid=new Cell[this.cellRows][this.cellColumns];
         for(int i=0;i<this.cellRows;i++)
@@ -38,24 +40,22 @@ public class Grid implements CellGrid
         try
         {
             Cell c = grid[x][y];
-            if (status) {
+            if (status)
+            {
                 c.setCellStatus(true);
                 currentShape.put(c, c);
-            } else {
+            }
+            else
+            {
                 currentShape.remove(c, c);
             }
         }
         catch(ArrayIndexOutOfBoundsException error)
         {
-            //do nothing
+            //nothing
         }
     }
 
-    @Override
-    public void resizeGrid(int x, int y)
-    {
-        clear();
-    }
 
     public void clear()
     {
@@ -74,11 +74,12 @@ public class Grid implements CellGrid
 
     public void next()
     {
+        this.generation++;
         Cell c;
         int x, y;
 
         newShape.clear();
-        Enumeration<Cell> enumerate = currentShape.keys();
+        Enumeration enumerate = currentShape.keys();
         while(enumerate.hasMoreElements())
         {
             c = (Cell) enumerate.nextElement();

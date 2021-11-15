@@ -1,6 +1,0 @@
-USE jdbc;
-CREATE TABLE `jdbc`.`CELLS` (
-id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-X_Axis int NOT NULL,
-Y_Axis int NOT NULL
-)
