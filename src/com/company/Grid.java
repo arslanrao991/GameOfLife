@@ -1,5 +1,6 @@
 package com.company;
 import java.util.*;
+import Factory.Factory;
 
 public class Grid implements CellGrid
 {
@@ -109,6 +110,8 @@ public class Grid implements CellGrid
             c = (Cell) enumerate.nextElement();
             if(c.getNeighbours()!= 3 && c.getNeighbours()!=2)
             {
+                c.neighbours=0;
+                c.setCellStatus(false);
                 currentShape.remove(c);
             }
         }
