@@ -1,24 +1,36 @@
 package UI;
 import com.company.CellGrid;
-import com.company.Factory;
-import com.company.GameOfLife;
+import Factory.Factory;
+import com.company.Grid;
+import com.company.UIListener;
 
-public class GameOfLifeControls implements CellGrid
+public class GameOfLifeControls implements UIListener
 {
     CellGrid cellGrid = Factory.getGrid();
-    @Override
+    Board board;
+
     public boolean getCellStatus(int x, int y) {
         return false;
     }
 
-    @Override
+
     public void setCell(int x, int y, boolean status)
     {
         cellGrid.setCell(x, y, status);
     }
 
-    @Override
+
     public void clear() {
 
+    }
+
+    @Override
+    public void updateGraphics(Grid g)
+    {
+        board.updateBoard(g);
+    }
+    public void setBoard(Board b)
+    {
+        this.board=b;
     }
 }

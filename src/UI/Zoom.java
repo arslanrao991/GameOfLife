@@ -3,7 +3,7 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 
-public class MouseClick extends JPanel
+public class Zoom extends JPanel
 {
     protected Graphics getComponentGraphics(Graphics g)
     {
