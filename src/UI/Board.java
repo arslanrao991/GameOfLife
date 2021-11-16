@@ -6,7 +6,8 @@ import java.awt.event.*;
 
 import java.awt.Color;
 import javax.swing.JPanel;
-import com.company.Factory;
+import Factory.Factory;
+import com.company.Grid;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,20 +16,11 @@ import java.awt.Dimension;
 
 public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
-    GameOfLifeControls controls = new GameOfLifeControls();
+    GameOfLifeControls controls = Factory.controler;
 
     javax.swing.JPanel pn1 = new javax.swing.JPanel();
     javax.swing.JScrollPane scroll_pane1 = new javax.swing.JScrollPane();;
-    javax.swing.JSlider slider_1=new javax.swing.JSlider();;
-
-
-import Factory.Factory;
-import com.company.Grid;
-
-public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
-{
-    GameOfLifeControls controls = Factory.controler;
-
+    javax.swing.JSlider slider_1=new javax.swing.JSlider();
 
     static final int cols = Factory.gridCols;
     static final int rows = Factory.gridRows;
@@ -63,7 +55,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         super.paintComponent(g);
         grid(g);
         //spawn(g);
-        drawGraphics(g);
+       // drawGraphics(g);
     }
 
 
@@ -150,60 +142,10 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
             pack();
         }
 
-                g.drawRect((i * size) + originX, (j*size)+originY, size, size);
+
             }
-        }
 
-    }
-    public class perform_Zoom extends javax.swing.JFrame {
-        perform_Zoom() {
-            slider_1.setMinimum(1);
-            slider_1.setMaximum(100);
-            slider_1.setValue(1);
 
-            slider_1.addChangeListener(new javax.swing.event.ChangeListener() {
-                public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                    jSlider1StateChanged(evt);
-                }
-            });
-            scroll_pane1.setPreferredSize(new Dimension((slider_1.getValue() * 5), (slider_1.getValue() * 10)));
-            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(pn1);
-            pn1.setLayout(jPanel1Layout);
-            jPanel1Layout.setHorizontalGroup(
-                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGap(0, 0, Short.MAX_VALUE)
-            );
-            jPanel1Layout.setVerticalGroup(
-                    jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGap(0, 0, Short.MAX_VALUE)
-            );
-
-            scroll_pane1.setViewportView(pn1);
-
-            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-            getContentPane().setLayout(layout);
-            layout.setHorizontalGroup(
-                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(slider_1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
-                                            .addComponent(scroll_pane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addContainerGap())
-            );
-            layout.setVerticalGroup(
-                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                    .addComponent(slider_1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(scroll_pane1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
-                                    .addContainerGap())
-            );
-
-            pack();
-        }
-
-    }
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {
         pn1.repaint();
     }

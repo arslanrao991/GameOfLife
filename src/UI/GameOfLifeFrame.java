@@ -25,7 +25,6 @@ public class GameOfLifeFrame extends JFrame
         Graphics g = null;
         int spacing = 10;
 
-<<<<<<< HEAD
         f.setSize(1100,700);//400 width and 500 height
         Board panel = new Board();
 
@@ -33,12 +32,11 @@ public class GameOfLifeFrame extends JFrame
         //f.add()
         f.add(panel);
         f.setLocationRelativeTo(null);
-        panel.Panel();
+       // panel.Panel();
 
         f.setVisible(true);//making the frame visible
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-=======
         f.setLayout(new BorderLayout());
 
         f.setSize(1100,700);
@@ -74,12 +72,11 @@ public class GameOfLifeFrame extends JFrame
         //f.add(panel5, BorderLayout.CENTER);
 
         f.add(board);
-        board.drawBoard();
+       // board.drawBoard();
 
         f.setVisible(true);//making the frame visible
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
     }
 
 
