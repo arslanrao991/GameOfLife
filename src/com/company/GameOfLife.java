@@ -1,11 +1,10 @@
 package com.company;
-
-import UI.*;
+import Factory.Factory;
 
 public class GameOfLife
 {
-    //Canvas canvas;
     public Grid grid;
+    public UIListener uiControler;
     int counter;
     int zoom;
     int speed;
@@ -18,6 +17,7 @@ public class GameOfLife
         this.speed = Factory.defaultSpeed;
         this.zoom = Factory.defaultZoom;
         this.counter = 0;
+        uiControler = Factory.getControler();
 
         /*Database db = new Database();
         db.connect();
@@ -25,27 +25,27 @@ public class GameOfLife
         swing.Example();*/
     }
 
-    void start()
+    public void start()
     {
         this.gameStatus = true;
     }
-    void stop()
+    public void stop()
     {
         this.gameStatus = false;
     }
-    void reset()
+    public void reset()
     {
         stop();
     }
-    boolean isGameRunning()
+    public boolean isGameRunning()
     {
         return this.gameStatus;
     }
-    void setZoom(int value)
+    public void setZoom(int value)
     {
         this.zoom=value;
     }
-    void setSpeed(int value)
+    public void setSpeed(int value)
     {
         this.speed=value;
     }
@@ -60,6 +60,7 @@ public class GameOfLife
     void nextButtonClick()
     {
         counter++;
+        grid.next();
         //will add functionality
     }
     void speedChanges(int value)
@@ -74,4 +75,9 @@ public class GameOfLife
     {
         reset();
     }
+    void updateState()
+    {
+        uiControler.updateGraphics(grid);
+    }
+
 }
