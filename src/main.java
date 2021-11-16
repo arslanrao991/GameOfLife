@@ -1,18 +1,42 @@
 import Database.Database;
+import Factory.Factory;
 import UI.GameOfLifeControls;
 import UI.GameOfLifeFrame;
 import com.company.GameOfLife;
 
+import java.util.concurrent.TimeUnit;
+
 public class main
 {
-    public static void main(String[] args)
-    {
-
+    public static void main(String[] args) throws InterruptedException {
+        Factory f = new Factory("ui");
         GameOfLife game = new GameOfLife();
         game.initGame();
 
         GameOfLifeFrame g = new GameOfLifeFrame();
         g.Frame();
+
+        while(!game.grid.grid[2][2].isAlive())
+        {
+            game.uiControler.updateGraphics(game.grid);
+        }
+        game.start();
+
+        while(game.isGameRunning())
+        {
+            game.grid.next();
+            TimeUnit.MILLISECONDS.sleep(100);
+            game.uiControler.updateGraphics(game.grid);
+
+        }
+
+
+        /*for(int i=0;i<5;i++)
+        {
+            game.grid.setCell(i, i, true);
+            game.uiControler.updateGraphics(game.grid);
+            TimeUnit.SECONDS.sleep(1);
+        }*/
 
 
 
