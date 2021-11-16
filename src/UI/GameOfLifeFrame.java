@@ -26,13 +26,15 @@ public class GameOfLifeFrame extends JFrame
         int spacing = 10;
 
         f.setSize(1100,700);//400 width and 500 height
-        Board panel = new Board();
+        NewJFrame panel = new NewJFrame();
+        panel.setVisible(true);
 
         panel.setLayout(new BorderLayout());
+
         //f.add()
         f.add(panel);
         f.setLocationRelativeTo(null);
-       // panel.Panel();
+     //   panel= new Board();
 
         f.setVisible(true);//making the frame visible
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,11 +52,11 @@ public class GameOfLifeFrame extends JFrame
         //gridPanel.setLayout(new GridLayout(Factory.gridRows,Factory.gridCols));
 
 
-        panel1.setBackground(Color.GRAY);
-        panel2.setBackground(Color.GRAY);
-        panel3.setBackground(Color.GRAY);
-        panel4.setBackground(Color.GRAY);
-        panel5.setBackground(Color.GREEN);
+        panel1.setBackground(Color.BLACK);
+        panel2.setBackground(Color.BLACK);
+        panel3.setBackground(Color.BLACK);
+        panel4.setBackground(Color.BLACK);
+       // panel5.setBackground(Color.GREEN);
 
 
         panel1.setPreferredSize(new Dimension(5, 5));
@@ -71,12 +73,12 @@ public class GameOfLifeFrame extends JFrame
         f.add(panel4, BorderLayout.SOUTH);
         //f.add(panel5, BorderLayout.CENTER);
 
-        f.add(board);
-       // board.drawBoard();
+//        f.add(board);
+//        board.drawBoard();
+//        board.paintComponent();
 
         f.setVisible(true);//making the frame visible
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 
 
@@ -85,6 +87,10 @@ public class GameOfLifeFrame extends JFrame
     {
         GameOfLifeFrame f = new GameOfLifeFrame();
         f.Frame();
-
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new NewJFrame().setVisible(true);
+//            }
+//        });
     }
 }

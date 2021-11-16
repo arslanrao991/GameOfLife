@@ -16,19 +16,19 @@ public class main
         GameOfLifeFrame g = new GameOfLifeFrame();
         g.Frame();
 
-        while(!game.grid.grid[2][2].isAlive())
-        {
-            game.uiControler.updateGraphics(game.grid);
-        }
-        game.start();
-
-        while(game.isGameRunning())
-        {
-            game.grid.next();
-            TimeUnit.MILLISECONDS.sleep(100);
-            game.uiControler.updateGraphics(game.grid);
-
-        }
+//        while(!game.grid.grid[2][2].isAlive())
+//        {
+//            game.uiControler.updateGraphics(game.grid);
+//        }
+//        game.start();
+//
+//        while(game.isGameRunning())
+//        {
+//            game.grid.next();
+//            TimeUnit.MILLISECONDS.sleep(100);
+//            game.uiControler.updateGraphics(game.grid);
+//
+//        }
 
 
         /*for(int i=0;i<5;i++)
