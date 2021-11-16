@@ -3,10 +3,7 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
+
 import java.awt.Color;
 import javax.swing.JPanel;
 import com.company.Factory;
@@ -23,9 +20,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     javax.swing.JPanel pn1 = new javax.swing.JPanel();
     javax.swing.JScrollPane scroll_pane1 = new javax.swing.JScrollPane();;
     javax.swing.JSlider slider_1=new javax.swing.JSlider();;
-<<<<<<< HEAD
-=======
-=======
+
 
 import Factory.Factory;
 import com.company.Grid;
@@ -33,8 +28,7 @@ import com.company.Grid;
 public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
     GameOfLifeControls controls = Factory.controler;
->>>>>>> a3c7014c040936d932f612838555dcc708de0b02
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
+
 
     static final int cols = Factory.gridCols;
     static final int rows = Factory.gridRows;
@@ -75,30 +69,20 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     private void grid(Graphics g)
     {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
+
         Graphics2D g_2d = (Graphics2D)  g.create();
         g_2d.setColor(Color.darkGray);
         g_2d.scale((double)slider_1.getValue(),(double)slider_1.getValue());
         g_2d.translate(originX/2, originY/2);
         for(int i=0;i<=rows;i++)
-<<<<<<< HEAD
-=======
-=======
+
         g.setColor(Color.darkGray);
 
         for(int i=0;i<xPanel/size;i++)
->>>>>>> a3c7014c040936d932f612838555dcc708de0b02
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
+
         {
             for (int j=0;j<yPanel/size;j++)
             {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
                 g_2d.drawRect((j * size) + originX, (i*size)+originY, size, size);
             }
         }
@@ -116,7 +100,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
             g.drawLine(0, i*size, xPanel, i*size);   //row
             g.drawLine(i*size, 0, i*size, yPanel);   //col
         }*/
-<<<<<<< HEAD
+
     }
     public class perform_Zoom extends javax.swing.JFrame {
         perform_Zoom() {
@@ -166,13 +150,10 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
             pack();
         }
 
-=======
-=======
                 g.drawRect((i * size) + originX, (j*size)+originY, size, size);
             }
         }
 
->>>>>>> a3c7014c040936d932f612838555dcc708de0b02
     }
     public class perform_Zoom extends javax.swing.JFrame {
         perform_Zoom() {
@@ -222,8 +203,6 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
             pack();
         }
 
->>>>>>> a8a25d9a90d70e7725c7cb69aa1ca816095a5c6a
-        ;
     }
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {
         pn1.repaint();
