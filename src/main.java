@@ -1,39 +1,44 @@
-//import Database.Database;
+import Database.Database;
 import Factory.Factory;
 import UI.GameOfLifeControls;
 import UI.GameOfLifeFrame;
 import com.company.GameOfLife;
 
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class main
 {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException
+    {
+        Scanner myInput = new Scanner( System.in );
         Factory f = new Factory("ui");
         GameOfLife game = new GameOfLife();
         game.initGame();
 
         GameOfLifeFrame g = new GameOfLifeFrame();
-        g.Frame();
+        //g.Frame();
 
-//        while(!game.grid.grid[2][2].isAlive())
-//        {
-//            game.uiControler.updateGraphics(game.grid);
-//        }
-//        game.start();
-//
-//        while(game.isGameRunning())
-//        {
-//            game.grid.next();
-//            TimeUnit.MILLISECONDS.sleep(100);
-//            game.uiControler.updateGraphics(game.grid);
-//
-//        }
+
+        while(!game.grid.grid[2][2].isAlive())
+        {
+            game.uiControler.updateGraphics(game.grid);
+        }
+        game.start();
+        int a;
+        while(game.isGameRunning())
+        {
+            game.grid.next();
+            TimeUnit.MILLISECONDS.sleep(50);
+            game.uiControler.updateGraphics(game.grid);
+
+        }
 
 
         /*for(int i=0;i<5;i++)
         {
             game.grid.setCell(i, i, true);
+
             game.uiControler.updateGraphics(game.grid);
             TimeUnit.SECONDS.sleep(1);
         }*/

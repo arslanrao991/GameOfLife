@@ -36,18 +36,19 @@ public class Grid implements CellGrid
     }
 
     @Override
-    public void setCell(int x, int y, boolean status)
+    synchronized public void setCell(int x, int y, boolean status)
     {
         try
         {
             Cell c = grid[x][y];
-            if (status)
+            if (!grid[x][y].isAlive() && status)
             {
                 c.setCellStatus(true);
                 currentShape.put(c, c);
             }
             else
             {
+                c.setCellStatus(false);
                 currentShape.remove(c, c);
             }
         }
@@ -126,9 +127,6 @@ public class Grid implements CellGrid
                 setCell(c.x_axis, c.y_axis, true);
             }
         }
-
-
-
     }
 
     void addNeighbour(int x, int y)
