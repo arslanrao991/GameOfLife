@@ -41,7 +41,7 @@ public class Grid implements CellGrid
         try
         {
             Cell c = grid[x][y];
-            if (!grid[x][y].isAlive() && status)
+            if ( status)
             {
                 c.setCellStatus(true);
                 currentShape.put(c, c);

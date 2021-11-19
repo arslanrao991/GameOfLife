@@ -3,40 +3,45 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Random;
-import java.util.Scanner;
 
 import Factory.Factory;
 import com.company.Grid;
 
 public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
-    GameOfLifeControls controls = Factory.controler;
+    GameOfLifeControls controls = Factory.controller;
 
     static final int cols = Factory.gridCols;
     static final int rows = Factory.gridRows;
     static final int originX = 0;
     static final int originY = 0;
-    static final int size = Factory.defaultZoom;
+    static final int size = Factory.currentZoom;
 
 
-    int xPanel = 1280, yPanel = 650;
-    public int startX = 64-((xPanel/size)/2), startY = 32-((yPanel/size)/2);
+    int xPanel, yPanel;
+    public int startX, startY;
 
-    boolean[][] life = new boolean[65][128];
+    boolean[][] life;
     boolean start = true;
     int check=0;
     boolean clicked = false;
 
 
-    public Board()
+    public Board(int xPanel, int yPanel)
     {
+        this.xPanel = xPanel;
+        this.yPanel = yPanel;
+        startX = (xPanel/Factory.maxZoomOut)/2-((xPanel/size)/2);
+        startY = (yPanel/Factory.maxZoomOut)/2-((yPanel/size)/2);
+        life = new boolean[Factory.gridRows][Factory.gridCols];
+
         setSize(xPanel, yPanel);
         setLayout(null);
         setBackground(Color.black);
         addMouseListener(this);
-        addMouseListener(this);
+        addMouseMotionListener(this);
         controls.setBoard(this);
+
         for(int i=0;i<yPanel/size;i++)
         {
             for(int j=0;j<xPanel/size;j++)
@@ -53,10 +58,11 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         }
 
         life[0][0]=true;
-        life[64][0]=true;
-        life[0][127]=true;
-        life[64][127]=true;
-        //new Timer(200, this).start();
+        life[Factory.gridRows-1][0]=true;
+        life[0][Factory.gridCols-1]=true;
+        life[Factory.gridRows-1][Factory.gridCols-1]=true;
+
+        new Timer(200, this);
     }
 
     @Override
@@ -108,9 +114,9 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void updateBoard(Grid g)
     {
-        for(int i=0;i<yPanel/10;i++)
+        for(int i=0;i<Factory.gridRows;i++)
         {
-            for(int j=0;j<xPanel/10;j++)
+            for(int j=0;j<Factory.gridCols;j++)
             {
                 life[i][j] = g.grid[i][j].isAlive();
             }
@@ -118,6 +124,12 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         repaint();
     }
 
+    public void setDimensions(int xPanel, int yPanel)
+    {
+        this.xPanel = xPanel;
+        this.yPanel = yPanel;
+        repaint();
+    }
 
     public void actionPerformed(ActionEvent e)
     {
@@ -127,7 +139,18 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void mouseDragged(MouseEvent e)
     {
+        int x = (e.getX()/size)+startX;
+        int y = (e.getY()/size)+startY;
+        if(!controls.getCell(y, x) && clicked)
+        {
+            controls.setCell(y, x, true);
+            //mouseClicked(e);
+        }
+        else if(controls.getCell(y, x) && !clicked)
+            controls.setCell(y, x, false);
 
+
+        repaint();
     }
     public void mouseMoved(MouseEvent e)
     {
@@ -135,18 +158,26 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     }
     synchronized public void mouseClicked(MouseEvent e)
     {
-        clicked = false;
+
     }
     synchronized public void mousePressed(MouseEvent e)
     {
         int x = (e.getX()/size)+startX;
         int y = (e.getY()/size)+startY;
+        clicked = true;
 
-        controls.setCell(y, x, true);
+        if(!controls.getCell(y, x) && clicked)
+        {
+            controls.setCell(y, x, true);
+        }
+        else if(controls.getCell(y, x))
+            controls.setCell(y, x, false);
+
 
     }
     public void mouseReleased(MouseEvent e)
     {
+        clicked = false;
 
     }
     public void mouseEntered(MouseEvent e)

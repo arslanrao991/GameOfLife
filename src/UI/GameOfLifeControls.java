@@ -21,6 +21,10 @@ public class GameOfLifeControls implements UIListener
     {
         cellGrid.setCell(x, y, status);
     }
+    public boolean getCell(int x, int y)
+    {
+        return cellGrid.getCellStatus(x, y);
+    }
 
 
     public void clear() {
