@@ -3,11 +3,13 @@ import Factory.Factory;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 
-public class GameOfLife<audioStream>
+public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
 {
     public Grid grid;
-    public UIListener uiController;
+    public UIListener uiController = null;
+    public DBListener dbListener = null;
     int counter;
     int zoom;
     int speed;
@@ -18,19 +20,11 @@ public class GameOfLife<audioStream>
 
     public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
-        this.grid = Factory.getGrid();
-        //this.canvas = new Canvas(this.grid);
+        this.grid = new Grid();
         this.speed = Factory.defaultSpeed;
         this.zoom = Factory.currentZoom;
         this.counter = 0;
-        this.setUIController();
         clip.open(audioStream);
-
-
-        /*Database db = new Database();
-        db.connect();
-        swing swing = new swing();
-        swing.Example();*/
     }
 
     public void start()
@@ -43,10 +37,7 @@ public class GameOfLife<audioStream>
         this.gameStatus = false;
         clip.stop();
     }
-    public void setUIController()
-    {
-        uiController = Factory.getController();
-    }
+
     public void reset()
     {
         stop();
@@ -73,34 +64,97 @@ public class GameOfLife<audioStream>
         return this.speed;
     }
 
-    void startStopButtonClick()
+    //BLListener UI
+    @Override
+    public void startStopButtonClick()
     {
         if(isGameRunning())
             stop();
         else
             start();
     }
-    void nextButtonClick()
+    @Override
+    public void nextButtonClick()
     {
         counter++;
         grid.next();
     }
-
-    void speedChanges(int value)
-    {
-        setSpeed(value);
-    }
-    void zoomChanged(int value)
-    {
-        setZoom(value);
-    }
-    void resetButtonClicked()
+    @Override
+    public void resetButtonClicked()
     {
         reset();
     }
+    @Override
+    public void zoomChanged(int value)
+    {
+        setZoom(value);
+    }
+    @Override
+    public void saveStateButtonClick()
+    {
+        dbListener.saveState();
+    }
+    @Override
+    public void deleteStateButtonClick()
+    {
+        dbListener.deleteState();
+    }
+    @Override
+    public void loadStateButtonClick()
+    {
+        Hashtable h;
+        h = dbListener.loadState();
+    }
+    @Override
+    public void viewStateButtonClick()
+    {
+        Hashtable h;
+        h = dbListener.viewState();
+    }
+    @Override
+    public void speedChanged(int value)
+    {
+        setSpeed(value);
+    }
+
     void updateState()
     {
-        uiController.updateGraphics(grid);
+        if(uiController != null)
+            uiController.updateGraphics(grid);
+    }
+
+
+    public Grid getGrid()
+    {
+        return grid;
+    }
+
+    @Override
+    public int getGeneration() {
+        return counter;
+    }
+
+    public GameOfLife getGameOfLife()
+    {
+        return this;
+    }
+    public void addUIListener(UIListener l)
+    {
+        this.uiController = l;
+    }
+    public void detachUI()
+    {
+         this.uiController = null;
+    }
+
+    //BLListener_For_DB
+    public void addDBListener(DBListener l)
+    {
+        this.dbListener = l;
+    }
+    public void detachDB()
+    {
+        this.dbListener = null;
     }
 
 }

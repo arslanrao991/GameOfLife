@@ -17,20 +17,20 @@ public class Factory
     public static int getGridResolutionHeight = 650;
     public static int gridRows = getGridResolutionHeight/maxZoomOut;
     public static int gridCols = gridResolutionWidth/maxZoomOut;
-    public static GameOfLifeControls controller;
-    public static Grid grid = new Grid();
+    public static GameOfLifeControls controller = null;
+    //public static Grid grid = new Grid();
 
     public Factory(String type)
     {
-        if(type.equals("ui"))
+        /*if(type.equals("ui"))
         {
             controller = new GameOfLifeControls();
-        }
+        }*/
     }
-    public static Grid getGrid()
+    /*public static Grid getGrid()
     {
         return grid;
-    }
+    }*/
     public static GameOfLifeControls getController()
     {
         return controller;

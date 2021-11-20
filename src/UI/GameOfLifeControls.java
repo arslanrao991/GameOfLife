@@ -1,22 +1,44 @@
 package UI;
-import com.company.CellGrid;
+import com.company.*;
 import Factory.Factory;
-import com.company.Grid;
-import com.company.UIListener;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
 public class GameOfLifeControls implements UIListener
 {
-    CellGrid cellGrid = Factory.getGrid();
+    CellGrid cellGrid;
+    BLListener gameControls;
     Board board;
 
-    public boolean getCellStatus(int x, int y) {
-        return false;
+    public GameOfLifeControls(GameOfLife gc)
+    {
+        this.gameControls = gc;
+        this.cellGrid = gameControls.getGrid();
+        this.gameControls.addUIListener(this);
     }
 
+    public void setBoard(Board b)
+    {
+        this.board=b;
+    }
+    public void setGOLControls(GameOfLife g)
+    {
+        gameControls = g;
+    }
 
+    //BLListener
+    public int getCurrentZoom()
+    {
+        return this.gameControls.getZoom();
+    }
+    public int getCurrentSpeed()
+    {
+        return this.gameControls.getSpeed();
+    }
+
+    //CellGrid
     public void setCell(int x, int y, boolean status)
     {
         cellGrid.setCell(x, y, status);
@@ -26,18 +48,12 @@ public class GameOfLifeControls implements UIListener
         return cellGrid.getCellStatus(x, y);
     }
 
-
-    public void clear() {
-
-    }
-
+    //UIListener
     @Override
     public void updateGraphics(Grid g)
     {
         board.updateBoard(g);
     }
-    public void setBoard(Board b)
-    {
-        this.board=b;
-    }
+
+
 }

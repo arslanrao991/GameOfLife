@@ -61,15 +61,13 @@ public class Grid implements CellGrid
 
     public void clear()
     {
-        grid = null;
-        currentShape = new Hashtable();
-        newShape = new Hashtable();
-        grid=new Cell[this.cellRows][this.cellColumns];
+        currentShape.clear();
+        newShape.clear();
         for(int i=0;i<this.cellRows;i++)
         {
             for(int j=0;j<this.cellColumns;j++)
             {
-                this.grid[i][j] = new Cell(i, j);
+                this.grid[i][j].setCellStatus(false);
             }
         }
     }

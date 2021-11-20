@@ -5,17 +5,18 @@ import java.awt.*;
 import java.awt.event.*;
 
 import Factory.Factory;
+import com.company.GameOfLife;
 import com.company.Grid;
 
 public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
-    GameOfLifeControls controls = Factory.controller;
+    GameOfLifeControls controls;
 
     static final int cols = Factory.gridCols;
     static final int rows = Factory.gridRows;
     static final int originX = 0;
     static final int originY = 0;
-    static final int size = Factory.currentZoom;
+    public static int size;
 
 
     int xPanel, yPanel;
@@ -27,12 +28,15 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     boolean clicked = false;
 
 
-    public Board(int xPanel, int yPanel)
+    public Board(int xPanel, int yPanel, GameOfLife g)
     {
+        this.controls = new GameOfLifeControls(g);
         this.xPanel = xPanel;
         this.yPanel = yPanel;
+        size = controls.getCurrentZoom();
         startX = (xPanel/Factory.maxZoomOut)/2-((xPanel/size)/2);
         startY = (yPanel/Factory.maxZoomOut)/2-((yPanel/size)/2);
+
         life = new boolean[Factory.gridRows][Factory.gridCols];
 
         setSize(xPanel, yPanel);
@@ -49,9 +53,9 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
                 life[i][j]=false;
             }
         }
-        for(int i=16;i<48;i++)
+        for(int i=19;i<48;i++)
         {
-            for(int j=32;j<96;j++)
+            for(int j=37;j<96;j++)
             {
                 life[i][j]=true;
             }
@@ -82,7 +86,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         {
             for (int j=0;j<yPanel/size;j++)
             {
-                g.drawRect((i * size) + originX, (j*size)+originY, size, size);
+                g.drawRect((i * size) + originX, (j*size) + originY, size, size);
             }
         }
 
@@ -114,6 +118,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void updateBoard(Grid g)
     {
+        setDimensions(xPanel, yPanel);
         for(int i=0;i<Factory.gridRows;i++)
         {
             for(int j=0;j<Factory.gridCols;j++)
@@ -128,7 +133,12 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     {
         this.xPanel = xPanel;
         this.yPanel = yPanel;
-        repaint();
+        if(size != controls.getCurrentZoom())
+        {
+            size = controls.getCurrentZoom();
+            startX = (xPanel / Factory.maxZoomOut) / 2 - ((xPanel / size) / 2);
+            startY = (yPanel / Factory.maxZoomOut) / 2 - ((yPanel / size) / 2);
+        }
     }
 
     public void actionPerformed(ActionEvent e)
@@ -139,6 +149,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void mouseDragged(MouseEvent e)
     {
+
         int x = (e.getX()/size)+startX;
         int y = (e.getY()/size)+startY;
         if(!controls.getCell(y, x) && clicked)
@@ -148,7 +159,6 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         }
         else if(controls.getCell(y, x) && !clicked)
             controls.setCell(y, x, false);
-
 
         repaint();
     }
