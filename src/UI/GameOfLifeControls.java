@@ -3,6 +3,9 @@ import com.company.CellGrid;
 import Factory.Factory;
 import com.company.Grid;
 import com.company.UIListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 
 public class GameOfLifeControls implements UIListener
 {
@@ -17,6 +20,10 @@ public class GameOfLifeControls implements UIListener
     public void setCell(int x, int y, boolean status)
     {
         cellGrid.setCell(x, y, status);
+    }
+    public boolean getCell(int x, int y)
+    {
+        return cellGrid.getCellStatus(x, y);
     }
 
 

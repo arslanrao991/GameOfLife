@@ -1,23 +1,31 @@
 package com.company;
 import Factory.Factory;
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 
-public class GameOfLife
+public class GameOfLife<audioStream>
 {
     public Grid grid;
-    public UIListener uiControler;
+    public UIListener uiController;
     int counter;
     int zoom;
     int speed;
     boolean gameStatus;
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\gameOfLife.wav");
+    AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+    Clip clip = AudioSystem.getClip();
 
-    public void initGame()
+    public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
         this.grid = Factory.getGrid();
         //this.canvas = new Canvas(this.grid);
         this.speed = Factory.defaultSpeed;
-        this.zoom = Factory.defaultZoom;
+        this.zoom = Factory.currentZoom;
         this.counter = 0;
-        uiControler = Factory.getControler();
+        this.setUIController();
+        clip.open(audioStream);
+
 
         /*Database db = new Database();
         db.connect();
@@ -28,14 +36,21 @@ public class GameOfLife
     public void start()
     {
         this.gameStatus = true;
+        clip.start();
     }
     public void stop()
     {
         this.gameStatus = false;
+        clip.stop();
+    }
+    public void setUIController()
+    {
+        uiController = Factory.getController();
     }
     public void reset()
     {
         stop();
+        grid.clear();
     }
     public boolean isGameRunning()
     {
@@ -49,6 +64,14 @@ public class GameOfLife
     {
         this.speed=value;
     }
+    public int getZoom()
+    {
+        return this.zoom;
+    }
+    public int getSpeed()
+    {
+        return this.speed;
+    }
 
     void startStopButtonClick()
     {
@@ -61,8 +84,8 @@ public class GameOfLife
     {
         counter++;
         grid.next();
-        //will add functionality
     }
+
     void speedChanges(int value)
     {
         setSpeed(value);
@@ -77,7 +100,7 @@ public class GameOfLife
     }
     void updateState()
     {
-        uiControler.updateGraphics(grid);
+        uiController.updateGraphics(grid);
     }
 
 }

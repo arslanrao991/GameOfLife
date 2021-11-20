@@ -1,54 +1,68 @@
 package UI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
-import java.awt.Color;
-import javax.swing.JPanel;
+
 import Factory.Factory;
 import com.company.Grid;
-import java.awt.BorderLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
 
 public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
-    public static JComponent zoom_obj;
-
-    public Board() {
-    }
-
-    GameOfLifeControls controls = Factory.controler;
-
-    javax.swing.JPanel pn1 = new javax.swing.JPanel();
-    javax.swing.JScrollPane scroll_pane1 = new javax.swing.JScrollPane();;
-    javax.swing.JSlider slider_1=new javax.swing.JSlider();
+    GameOfLifeControls controls = Factory.controller;
 
     static final int cols = Factory.gridCols;
     static final int rows = Factory.gridRows;
     static final int originX = 0;
     static final int originY = 0;
-    static final int size = Factory.defaultZoom;
+    static final int size = Factory.currentZoom;
 
-    int xPanel = 1100, yPanel = 700;
 
-    boolean[][] life = new boolean[xPanel/size][yPanel/size];
+    int xPanel, yPanel;
+    public int startX, startY;
+
+    boolean[][] life;
     boolean start = true;
     int check=0;
     boolean clicked = false;
 
 
-    public void drawBoard()
+    public Board(int xPanel, int yPanel)
     {
-        setSize(1100, 700);
-        setLayout(new BorderLayout());
+        this.xPanel = xPanel;
+        this.yPanel = yPanel;
+        startX = (xPanel/Factory.maxZoomOut)/2-((xPanel/size)/2);
+        startY = (yPanel/Factory.maxZoomOut)/2-((yPanel/size)/2);
+        life = new boolean[Factory.gridRows][Factory.gridCols];
 
+        setSize(xPanel, yPanel);
+        setLayout(null);
         setBackground(Color.black);
         addMouseListener(this);
-        addMouseListener(this);
+        addMouseMotionListener(this);
         controls.setBoard(this);
 
-        //new Timer(200, this).start();
+        for(int i=0;i<yPanel/size;i++)
+        {
+            for(int j=0;j<xPanel/size;j++)
+            {
+                life[i][j]=false;
+            }
+        }
+        for(int i=16;i<48;i++)
+        {
+            for(int j=32;j<96;j++)
+            {
+                life[i][j]=true;
+            }
+        }
+
+        life[0][0]=true;
+        life[Factory.gridRows-1][0]=true;
+        life[0][Factory.gridCols-1]=true;
+        life[Factory.gridRows-1][Factory.gridCols-1]=true;
+
+        new Timer(200, this);
     }
 
     @Override
@@ -56,55 +70,43 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     {
         super.paintComponent(g);
         grid(g);
-        //spawn(g);
-       // drawGraphics(g);
+        drawGraphics(g);
     }
 
 
     private void grid(Graphics g)
     {
-        setSize(1100, 700);
-        Graphics2D g_2d = (Graphics2D)  g.create();
-        g_2d.setColor(Color.darkGray);
-        g_2d.scale((double)slider_1.getValue(),(double)slider_1.getValue());
-        g_2d.translate(originX/2, originY/2);
-
-        g_2d.setColor(Color.BLACK);
+        g.setColor(Color.darkGray);
 
         for(int i=0;i<xPanel/size;i++)
-
         {
             for (int j=0;j<yPanel/size;j++)
             {
-                g_2d.drawRect((j * size) + originX, (i*size)+originY, size, size);
+                g.drawRect((i * size) + originX, (j*size)+originY, size, size);
             }
         }
-//           g.setColor(Color.darkGray);
-//            for(int i=0;i<=rows;i++)
-//            {
-//                for (int j=0;j<cols;j++)
-//                {
-//                    g.drawRect((j * size) + originX, (i*size)+originY, size, size);
-//                 }
-//             }
-
-        /*for(int i=0;i<life.length;i++)
-        {
-            g.drawLine(0, i*size, xPanel, i*size);   //row
-            g.drawLine(i*size, 0, i*size, yPanel);   //col
-        }*/
 
     }
 
+
     private void drawGraphics(Graphics g)
     {
-        g.setColor(Color.blue);
-        for(int x=0;x<xPanel/size;x++)
+        g.setColor(Color.red);
+
+        for(int x=0;x<yPanel/size;x++)
         {
-            for(int y=0;y<(yPanel/size);y++)
+            for(int y=0;y<xPanel/size;y++)
             {
-                if(life[x][y]==true)
-                    g.fillRect(y*size, x*size, size, size);
+                try
+                {
+                    if(life[(x+startY)][(y+startX)])
+                        g.fillRect((1+y*size), (1+x*size), size-2, size-2);
+                }
+                catch (ArrayIndexOutOfBoundsException e)
+                {
+                    // do nothing
+                }
+
             }
         }
 
@@ -112,9 +114,9 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void updateBoard(Grid g)
     {
-        for(int i=0;i<10;i++)
+        for(int i=0;i<Factory.gridRows;i++)
         {
-            for(int j=0;j<10;j++)
+            for(int j=0;j<Factory.gridCols;j++)
             {
                 life[i][j] = g.grid[i][j].isAlive();
             }
@@ -122,6 +124,12 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         repaint();
     }
 
+    public void setDimensions(int xPanel, int yPanel)
+    {
+        this.xPanel = xPanel;
+        this.yPanel = yPanel;
+        repaint();
+    }
 
     public void actionPerformed(ActionEvent e)
     {
@@ -131,28 +139,45 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void mouseDragged(MouseEvent e)
     {
+        int x = (e.getX()/size)+startX;
+        int y = (e.getY()/size)+startY;
+        if(!controls.getCell(y, x) && clicked)
+        {
+            controls.setCell(y, x, true);
+            //mouseClicked(e);
+        }
+        else if(controls.getCell(y, x) && !clicked)
+            controls.setCell(y, x, false);
 
+
+        repaint();
     }
     public void mouseMoved(MouseEvent e)
     {
-        System.out.print("9");
-    }
-    public void mouseClicked(MouseEvent e)
-    {
-        clicked = false;
-    }
-    public void mousePressed(MouseEvent e)
-    {
-        int x = e.getX()/size;
-        int y = e.getY()/size;
 
-        controls.setCell(y, x, true);
-        /*life[x][y] = true;
-        repaint();*/
+    }
+    synchronized public void mouseClicked(MouseEvent e)
+    {
+
+    }
+    synchronized public void mousePressed(MouseEvent e)
+    {
+        int x = (e.getX()/size)+startX;
+        int y = (e.getY()/size)+startY;
+        clicked = true;
+
+        if(!controls.getCell(y, x) && clicked)
+        {
+            controls.setCell(y, x, true);
+        }
+        else if(controls.getCell(y, x))
+            controls.setCell(y, x, false);
+
 
     }
     public void mouseReleased(MouseEvent e)
     {
+        clicked = false;
 
     }
     public void mouseEntered(MouseEvent e)
@@ -164,13 +189,5 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     }
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Board().setVisible(true);
-            }
-        });
-    }
+
 }
-
-
