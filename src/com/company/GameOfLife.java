@@ -1,5 +1,5 @@
 package com.company;
-import Factory.Factory;
+import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +21,8 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
     public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
         this.grid = new Grid();
-        this.speed = Factory.defaultSpeed;
-        this.zoom = Factory.currentZoom;
+        this.speed = Constants.currentSpeed;
+        this.zoom = Constants.currentZoom;
         this.counter = 0;
         clip.open(audioStream);
     }
@@ -40,13 +40,46 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
 
     public void reset()
     {
-        stop();
-        grid.clear();
+        grid.reset();
+        counter=0;
     }
     public boolean isGameRunning()
     {
         return this.gameStatus;
     }
+
+    @Override
+    public boolean getCellStatus(int x, int y)
+    {
+        return grid.getCellStatus(x, y);
+    }
+
+    @Override
+    public void setCell(int x, int y, boolean status)
+    {
+        grid.setCell(x, y, status);
+    }
+
+    @Override
+    public void next()
+    {
+        grid.next();
+        counter++;
+    }
+
+    @Override
+    public void clear()
+    {
+        grid.clear();
+        counter=0;
+    }
+
+    @Override
+    public void setGeneration()
+    {
+        counter=0;
+    }
+
     public void setZoom(int value)
     {
         this.zoom=value;
@@ -71,7 +104,10 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
         if(isGameRunning())
             stop();
         else
+        {
             start();
+            grid.saveInitialShape();
+        }
     }
     @Override
     public void nextButtonClick()
@@ -82,7 +118,12 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
     @Override
     public void resetButtonClicked()
     {
-        reset();
+        if(isGameRunning())
+        {
+            reset();
+        }
+        else
+            clear();
     }
     @Override
     public void zoomChanged(int value)

@@ -1,12 +1,11 @@
 package UI;
 
-import Factory.Factory;
+import Factory.Constants;
 import com.company.GameOfLife;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.border.Border;
 
 
 public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListener
@@ -39,7 +38,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
 
         startBtn = new JButton("Start");
         nextBtn = new JButton("Next");
-        resetBtn = new JButton("Reset");
+        resetBtn = new JButton("Clear");
         saveStateBtn = new JButton("Save State");
         deleteStateBtn = new JButton("Delete State");
         loadStateBtn = new JButton("Load State");
@@ -192,7 +191,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
             try
             {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                if(board.startY < Factory.gridRows - board.yPanel/Board.size)
+                if(board.startY < Constants.gridRows - board.yPanel/Board.size)
                     board.startY += 1;
                 board.repaint();
             }
@@ -207,7 +206,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
             {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-                if(board.startX < Factory.gridCols -board.xPanel/Board.size)
+                if(board.startX < Constants.gridCols -board.xPanel/Board.size)
                     board.startX += 1;
                 board.repaint();
             }
@@ -244,14 +243,46 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         if(e.getSource() == startBtn)
         {
             board.controls.gameControls.startStopButtonClick();
+            startBtn.setText("Stop");
+            resetBtn.setText("Reset");
+
+            Thread GameLoop = new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    while(board.controls.gameControls.isGameRunning())
+                    {
+                        board.controls.gameControls.next();
+                        board.updateBoard(board.controls.gameControls.getGrid());
+                        genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+                        try
+                        {
+                            Thread.sleep(board.controls.gameControls.getSpeed());
+                        }
+                        catch(InterruptedException e)
+                        {
+
+                        }
+                    }
+                    startBtn.setText("Start");
+                    resetBtn.setText("Clear");
+                }
+            });
+            GameLoop.start();
         }
         else if(e.getSource() == nextBtn)
         {
             board.controls.gameControls.nextButtonClick();
+            board.updateBoard(board.controls.gameControls.getGrid());
+            genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+
         }
         else if(e.getSource() == resetBtn)
         {
             board.controls.gameControls.resetButtonClicked();
+            board.updateBoard(board.controls.gameControls.getGrid());
+            genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
         }
         else if(e.getSource() == saveStateBtn)
         {
