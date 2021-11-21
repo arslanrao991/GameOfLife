@@ -1,5 +1,5 @@
 package Console;
-import Factory.Factory;
+import Factory.Constants;
 import java.util.Scanner;
 
 public class main_frame {
@@ -9,7 +9,7 @@ public class main_frame {
     int cols=24;
     static final int originX = 0;
     static final int originY = 0;
-    static final int size = Factory.currentZoom;
+    static final int size = Constants.currentZoom;
 
     int xPanel = 1100, yPanel = 700;
 
