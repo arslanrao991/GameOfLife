@@ -1,3 +1,4 @@
+import Console.main_frame;
 import Factory.Factory;
 import UI.GameOfLifeFrame;
 import com.company.GameOfLife;
@@ -16,6 +17,9 @@ public class main
         Scanner myInput = new Scanner( System.in );
         Factory f = new Factory("ui");
         GameOfLife game = new GameOfLife();
+
+        // For console
+       // main_frame f =new main_frame();
 
         GameOfLifeFrame g = new GameOfLifeFrame(game);
 
@@ -40,14 +44,12 @@ public class main
             TimeUnit.MILLISECONDS.sleep(150);
             game.uiController.updateGraphics(game.grid);
         }
-        /*while(game.isGameRunning())
+        while(game.isGameRunning())
         {
             game.grid.next();
             TimeUnit.MILLISECONDS.sleep(150);
             game.uiController.updateGraphics(game.grid);
-
-
-        }*/
+        }
 
     }
 }
