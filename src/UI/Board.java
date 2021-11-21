@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import Factory.Factory;
+import Factory.Constants;
 import com.company.GameOfLife;
 import com.company.Grid;
 
@@ -12,8 +12,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 {
     GameOfLifeControls controls;
 
-    static final int cols = Factory.gridCols;
-    static final int rows = Factory.gridRows;
+    static final int cols = Constants.gridCols;
+    static final int rows = Constants.gridRows;
     static final int originX = 0;
     static final int originY = 0;
     public static int size;
@@ -34,10 +34,10 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         this.xPanel = xPanel;
         this.yPanel = yPanel;
         size = controls.getCurrentZoom();
-        startX = (xPanel/Factory.maxZoomOut)/2-((xPanel/size)/2);
-        startY = (yPanel/Factory.maxZoomOut)/2-((yPanel/size)/2);
+        startX = (xPanel/ Constants.maxZoomOut)/2-((xPanel/size)/2);
+        startY = (yPanel/ Constants.maxZoomOut)/2-((yPanel/size)/2);
 
-        life = new boolean[Factory.gridRows][Factory.gridCols];
+        life = new boolean[Constants.gridRows][Constants.gridCols];
 
         setSize(xPanel, yPanel);
         setLayout(null);
@@ -62,9 +62,9 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         }
 
         life[0][0]=true;
-        life[Factory.gridRows-1][0]=true;
-        life[0][Factory.gridCols-1]=true;
-        life[Factory.gridRows-1][Factory.gridCols-1]=true;
+        life[Constants.gridRows-1][0]=true;
+        life[0][Constants.gridCols-1]=true;
+        life[Constants.gridRows-1][Constants.gridCols-1]=true;
 
         new Timer(200, this);
     }
@@ -119,9 +119,9 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     public void updateBoard(Grid g)
     {
         setDimensions(xPanel, yPanel);
-        for(int i=0;i<Factory.gridRows;i++)
+        for(int i = 0; i< Constants.gridRows; i++)
         {
-            for(int j=0;j<Factory.gridCols;j++)
+            for(int j = 0; j< Constants.gridCols; j++)
             {
                 life[i][j] = g.grid[i][j].isAlive();
             }
@@ -136,8 +136,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         if(size != controls.getCurrentZoom())
         {
             size = controls.getCurrentZoom();
-            startX = (xPanel / Factory.maxZoomOut) / 2 - ((xPanel / size) / 2);
-            startY = (yPanel / Factory.maxZoomOut) / 2 - ((yPanel / size) / 2);
+            startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / size) / 2);
+            startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / size) / 2);
         }
     }
 
@@ -161,6 +161,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
             controls.setCell(y, x, false);
 
         repaint();
+        controls.gameControls.setGeneration();
+        updateBoard(controls.gameControls.getGrid());
     }
     public void mouseMoved(MouseEvent e)
     {
@@ -183,6 +185,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         else if(controls.getCell(y, x))
             controls.setCell(y, x, false);
 
+        controls.gameControls.setGeneration();
+        updateBoard(controls.gameControls.getGrid());
 
     }
     public void mouseReleased(MouseEvent e)
@@ -198,6 +202,5 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     {
 
     }
-
 
 }

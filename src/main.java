@@ -1,22 +1,24 @@
+<<<<<<< HEAD
 import Console.main_frame;
 import Factory.Factory;
+=======
+import Factory.Constants;
+>>>>>>> b3dacd5fafebe7e647f090046505b4523ef1f007
 import UI.GameOfLifeFrame;
 import com.company.GameOfLife;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class main
 {
     public static void main(String[] args) throws InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException
     {
-        Scanner myInput = new Scanner( System.in );
-        Factory f = new Factory("ui");
+        Constants f = new Constants();
         GameOfLife game = new GameOfLife();
+<<<<<<< HEAD
 
         // For console
        // main_frame f =new main_frame();
@@ -51,5 +53,9 @@ public class main
             game.uiController.updateGraphics(game.grid);
         }
 
+=======
+        GameOfLifeFrame g = new GameOfLifeFrame(game);
+
+>>>>>>> b3dacd5fafebe7e647f090046505b4523ef1f007
     }
 }
