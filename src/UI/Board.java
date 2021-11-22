@@ -23,8 +23,6 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     public int startX, startY;
 
     boolean[][] life;
-    boolean start = true;
-    int check=0;
     boolean clicked = false;
 
 
@@ -44,7 +42,6 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         setBackground(Color.black);
         addMouseListener(this);
         addMouseMotionListener(this);
-        controls.setBoard(this);
 
         for(int i=0;i<yPanel/size;i++)
         {

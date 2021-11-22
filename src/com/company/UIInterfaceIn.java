@@ -1,6 +1,6 @@
 package com.company;
 
-public interface BLListener
+public interface UIInterfaceIn
 {
     public int getZoom();
     public int getSpeed();
@@ -11,13 +11,11 @@ public interface BLListener
     public boolean isGameRunning();
 
 
-
     boolean getCellStatus(int x, int y);
     void setCell(int x, int y, boolean status);
     void next();
     void clear();
     public void setGeneration();
-
 
 
     void startStopButtonClick();
@@ -30,6 +28,6 @@ public interface BLListener
     void saveStateButtonClick();
     void deleteStateButtonClick();
     void loadStateButtonClick();
-    void viewStateButtonClick();
+    Grid viewStateButtonClick();
 
 }

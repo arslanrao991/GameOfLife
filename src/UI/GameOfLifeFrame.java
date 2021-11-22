@@ -2,10 +2,15 @@ package UI;
 
 import Factory.Constants;
 import com.company.GameOfLife;
+import com.company.Grid;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 
 public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListener
@@ -21,10 +26,10 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
     JButton loadStateBtn;
     JButton viewStateBtn;
     JLabel genLabel;
-    //JButton a;
-    //JButton b;
-    JSlider zoom_slider;
-    JSlider speed_slider;
+    /*JButton a;
+    JButton b;*/
+    JSlider speed_Slider;
+    JSlider zoom_Slider;
 
     double bottomControlsPanelRatio = 15.75;
 
@@ -46,8 +51,10 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         loadStateBtn = new JButton("Load State");
         viewStateBtn = new JButton("View State");
         genLabel = new JLabel("0");
-        zoom_slider = new JSlider(1,100,1);
-        speed_slider =new JSlider();
+        speed_Slider = new JSlider(1, 100, 50);
+        zoom_Slider = new JSlider(1, 100, 50);
+        /*a = new JButton("Speed Slider");
+        b = new JButton("Zoom Slider");*/
 
 
         f.addKeyListener(this);
@@ -88,13 +95,37 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         startBtn.setBounds(starBtnX, menu1Y , startBtnWidth, menu1Height);
         nextBtn.setBounds(nextBtnX, menu1Y+2, nextBtnWidth, menu1Height-2);
         resetBtn.setBounds(resetBtnX, menu1Y+2, resetBtnWidth, menu1Height-2);
-        zoom_slider.setBounds(speedSliderX, menu1Y+2, speedSliderWidth, menu1Height-2);
-        speed_slider.setBounds(zoomSliderX, menu1Y+2, zoomSliderWidth, menu1Height-2);
+        speed_Slider.setBounds(speedSliderX, menu1Y+2, speedSliderWidth, menu1Height-2);
+        zoom_Slider.setBounds(zoomSliderX, menu1Y+2, zoomSliderWidth, menu1Height-2);
 
         saveStateBtn.setBounds(saveBtnX, menu2Y, menu2BtnWidth, menu1Height);
         deleteStateBtn.setBounds(deleteBtnX, menu2Y, menu2BtnWidth, menu1Height);
         loadStateBtn.setBounds(loadBtnX, menu2Y, menu2BtnWidth, menu1Height);
         viewStateBtn.setBounds(viewBtnX, menu2Y, menu2BtnWidth, menu1Height);
+
+
+        zoom_Slider.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                zoom_slider_StateChanged(evt);
+            }
+
+            private void zoom_slider_StateChanged(ChangeEvent evt)
+            {
+
+                board.controls.gameControls.zoomChanged(5);
+                board.updateBoard(board.controls.gameControls.getGrid());
+                genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+            }
+        } );
+        zoom_Slider.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                // speed_slider_StateChanged(evt);
+            }
+        } );
+
 
         startBtn.addActionListener(this);
         nextBtn.addActionListener(this);
@@ -103,97 +134,8 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         deleteStateBtn.addActionListener(this);
         loadStateBtn.addActionListener(this);
         viewStateBtn.addActionListener(this);
-        zoom_slider.addChangeListener(new javax.swing.event.ChangeListener()
-                                      {
-                                          public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                                             // zoom_slider_StateChanged(evt);
-                                          }
-                                      } );
-        speed_slider.addChangeListener(new javax.swing.event.ChangeListener()
-                {
-                    public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                        // speed_slider_StateChanged(evt);
-                    }
-                } );
-
-        zoom_slider.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-                {
-                    f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_UP)
-                {
-                    try
-                    {
-                        if(board.startY!=0)
-                            board.startY -=1;
-                        board.repaint();
-                    }
-                    catch (ArrayIndexOutOfBoundsException error)
-                    {
-                        //do nothing
-                    }
-
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_DOWN)
-                {
-                    try
-                    {
-                        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                        if(board.startY < Factory.gridRows - board.yPanel/Board.size)
-                            board.startY += 1;
-                        board.repaint();
-                    }
-                    catch (ArrayIndexOutOfBoundsException error)
-                    {
-                        //do nothing
-                    }
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                {
-                    try
-                    {
-                        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-                        if(board.startX < Factory.gridCols -board.xPanel/Board.size)
-                            board.startX += 1;
-                        board.repaint();
-                    }
-                    catch (ArrayIndexOutOfBoundsException error)
-                    {
-                        //do nothing
-                    }
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_LEFT)
-                {
-                    try
-                    {
-                        if(board.startX!=0)
-                            board.startX -= 1;
-                        board.repaint();
-                    }
-                    catch (ArrayIndexOutOfBoundsException error)
-                    {
-                        //do nothing
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        } );
-
-
+        /*a.addActionListener(this);
+        b.addActionListener(this);*/
 
         startBtn.setLayout(null);
         startBtn.setFocusable(false);
@@ -209,10 +151,10 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         loadStateBtn.setFocusable(false);
         viewStateBtn.setLayout(null);
         viewStateBtn.setFocusable(false);
-        zoom_slider.setLayout(null);
-      //  zoom_slider.setFocusable(false);
-        speed_slider.setLayout(null);
-       // speed_slider.setFocusable(false);
+        speed_Slider.setLayout(null);
+        speed_Slider.setFocusable(false);
+        zoom_Slider.setLayout(null);
+        zoom_Slider.setFocusable(false);
 
         startBtn.setBackground(Color.darkGray);
         startBtn.setForeground(Color.white);
@@ -228,12 +170,14 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         loadStateBtn.setForeground(Color.white);
         viewStateBtn.setBackground(Color.darkGray);
         viewStateBtn.setForeground(Color.white);
-        zoom_slider.setBackground(Color.darkGray);
-        zoom_slider.setForeground(Color.white);
-        speed_slider.setBackground(Color.darkGray);
-        speed_slider.setForeground(Color.white);
+        speed_Slider.setBackground(Color.darkGray);
+        speed_Slider.setForeground(Color.white);
+        zoom_Slider.setBackground(Color.darkGray);
+        zoom_Slider.setForeground(Color.white);
 
         genLabel.setBounds(resetBtnX+resetBtnWidth+20, menu1Y, 100, 30);
+
+
 
 
         f.add(startBtn);
@@ -244,8 +188,8 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         f.add(loadStateBtn);
         f.add(viewStateBtn);
         f.add(genLabel);
-        f.add(zoom_slider);
-        f.add(speed_slider);
+        f.add(speed_Slider);
+        f.add(zoom_Slider);
 
     }
 
@@ -378,19 +322,27 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         else if(e.getSource() == saveStateBtn)
         {
             board.controls.gameControls.saveStateButtonClick();
+            board.updateBoard(board.controls.gameControls.getGrid());
+            genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
         }
         else if(e.getSource() == deleteStateBtn)
         {
             board.controls.gameControls.deleteStateButtonClick();
+            board.updateBoard(board.controls.gameControls.getGrid());
+            genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
         }
         else if(e.getSource() == loadStateBtn)
         {
             board.controls.gameControls.loadStateButtonClick();
+            board.updateBoard(board.controls.gameControls.getGrid());
+            genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
         }
         else if(e.getSource() == viewStateBtn)
         {
-            board.controls.gameControls.viewStateButtonClick();
+            Grid g = board.controls.gameControls.viewStateButtonClick();
+            JFrame2 f2 = new JFrame2(g);
         }
+
     }
 
     public void updateFrameDimension()
