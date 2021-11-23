@@ -31,6 +31,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
     JSlider speed_Slider;
     JSlider zoom_Slider;
 
+
     double bottomControlsPanelRatio = 15.75;
 
     public GameOfLifeFrame(GameOfLife g)
@@ -51,10 +52,8 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         loadStateBtn = new JButton("Load State");
         viewStateBtn = new JButton("View State");
         genLabel = new JLabel("0");
-        speed_Slider = new JSlider(1, 100, 50);
-        zoom_Slider = new JSlider(1, 100, 50);
-        /*a = new JButton("Speed Slider");
-        b = new JButton("Zoom Slider");*/
+        speed_Slider = new JSlider(1, 7, 4);
+        zoom_Slider = new JSlider(1, 7, 4);
 
 
         f.addKeyListener(this);
@@ -108,21 +107,44 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         {
             public void stateChanged(javax.swing.event.ChangeEvent evt)
             {
-                zoom_slider_StateChanged(evt);
+                zoom_Slider_StateChanged(evt);
             }
 
-            private void zoom_slider_StateChanged(ChangeEvent evt)
+            private void zoom_Slider_StateChanged(ChangeEvent evt)
             {
+                int zoom = 0;
 
-                board.controls.gameControls.zoomChanged(5);
+                if (zoom_Slider.getValue() == Board.size/5)
+                    return;
+
+                zoom =(zoom_Slider.getValue()*5);
+                board.controls.gameControls.zoomChanged(zoom);
                 board.updateBoard(board.controls.gameControls.getGrid());
                 genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+
+
             }
         } );
-        zoom_Slider.addChangeListener(new javax.swing.event.ChangeListener()
+        speed_Slider.addChangeListener(new javax.swing.event.ChangeListener()
         {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                // speed_slider_StateChanged(evt);
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
+                speed_Slider_StateChanged(evt);
+            }
+
+            private void speed_Slider_StateChanged(ChangeEvent evt)
+            {
+                int speed = 0;
+
+                if (speed_Slider.getValue() == Board.delay/130)
+                    return;
+
+                speed = Constants.minSpeed - speed_Slider.getValue()*130;
+                board.controls.gameControls.speedChanged(speed);
+                board.updateBoard(board.controls.gameControls.getGrid());
+                genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+
+
             }
         } );
 

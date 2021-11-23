@@ -15,7 +15,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     int zoom;
     int speed;
     boolean gameStatus;
-    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\gameOfLife.wav");
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
     AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
     Clip clip = AudioSystem.getClip();
 
