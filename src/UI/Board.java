@@ -17,14 +17,13 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     static final int originX = 0;
     static final int originY = 0;
     public static int size;
+    public static int delay;
 
 
     int xPanel, yPanel;
     public int startX, startY;
 
     boolean[][] life;
-    boolean start = true;
-    int check=0;
     boolean clicked = false;
 
 
@@ -34,6 +33,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         this.xPanel = xPanel;
         this.yPanel = yPanel;
         size = controls.getCurrentZoom();
+        delay = controls.getCurrentSpeed();
         startX = (xPanel/ Constants.maxZoomOut)/2-((xPanel/size)/2);
         startY = (yPanel/ Constants.maxZoomOut)/2-((yPanel/size)/2);
 
@@ -44,29 +44,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         setBackground(Color.black);
         addMouseListener(this);
         addMouseMotionListener(this);
-        controls.setBoard(this);
 
-        for(int i=0;i<yPanel/size;i++)
-        {
-            for(int j=0;j<xPanel/size;j++)
-            {
-                life[i][j]=false;
-            }
-        }
-        for(int i=19;i<48;i++)
-        {
-            for(int j=37;j<96;j++)
-            {
-                life[i][j]=true;
-            }
-        }
-
-        life[0][0]=true;
-        life[Constants.gridRows-1][0]=true;
-        life[0][Constants.gridCols-1]=true;
-        life[Constants.gridRows-1][Constants.gridCols-1]=true;
-
-        new Timer(200, this);
     }
 
     @Override

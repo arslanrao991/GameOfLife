@@ -3,20 +3,23 @@ import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
-public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
+public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
 {
     public Grid grid;
     public UIListener uiController = null;
-    public DBListener dbListener = null;
+    public DBInterfaceOut dbListener = null;
     int counter;
     int zoom;
     int speed;
     boolean gameStatus;
-//    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\gameOfLife.wav");
-//    AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-//    Clip clip = AudioSystem.getClip();
+
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
+    AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+    Clip clip = AudioSystem.getClip();
+
 
     public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
@@ -24,18 +27,18 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
         this.speed = Constants.currentSpeed;
         this.zoom = Constants.currentZoom;
         this.counter = 0;
-      //  clip.open(audioStream);
+        clip.open(audioStream);
     }
 
     public void start()
     {
         this.gameStatus = true;
-     //   clip.start();
+        clip.start();
     }
     public void stop()
     {
         this.gameStatus = false;
-      //  clip.stop();
+        clip.stop();
     }
 
     public void reset()
@@ -43,6 +46,8 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
         grid.reset();
         counter=0;
     }
+
+    //BLListener UI
     public boolean isGameRunning()
     {
         return this.gameStatus;
@@ -73,7 +78,6 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
         grid.clear();
         counter=0;
     }
-
     @Override
     public void setGeneration()
     {
@@ -96,8 +100,6 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
     {
         return this.speed;
     }
-
-    //BLListener UI
     @Override
     public void startStopButtonClick()
     {
@@ -131,26 +133,44 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
         setZoom(value);
     }
     @Override
-    public void saveStateButtonClick()
+    synchronized public void saveStateButtonClick()
     {
-        dbListener.saveState();
+        dbListener.saveState(this.grid.currentShape);
     }
     @Override
-    public void deleteStateButtonClick()
+    synchronized public void deleteStateButtonClick()
     {
         dbListener.deleteState();
     }
     @Override
-    public void loadStateButtonClick()
+    synchronized public void loadStateButtonClick()
     {
+        Cell c;
         Hashtable h;
         h = dbListener.loadState();
+        grid.clear();
+        Enumeration enumerate = h.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            this.grid.setCell(c.x_axis, c.y_axis, true);
+        }
     }
     @Override
-    public void viewStateButtonClick()
+    synchronized public Grid viewStateButtonClick()
     {
+        Cell c;
         Hashtable h;
         h = dbListener.viewState();
+        Grid g = new Grid();
+
+        Enumeration enumerate = h.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            g.setCell(c.x_axis, c.y_axis, true);
+        }
+        return g;
     }
     @Override
     public void speedChanged(int value)
@@ -189,7 +209,7 @@ public class GameOfLife<audioStream> implements BLListener, BLListener_For_DB
     }
 
     //BLListener_For_DB
-    public void addDBListener(DBListener l)
+    public void addDBListener(DBInterfaceOut l)
     {
         this.dbListener = l;
     }

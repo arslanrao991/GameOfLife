@@ -10,6 +10,7 @@ public class Grid
     public Hashtable currentShape; //stores alive cells
     public Hashtable newShape; //stores new alive cells after counter
     public Cell[][] initialShape;
+    private boolean savedInitialState;
     int generation;
 
     public Grid()
@@ -19,6 +20,7 @@ public class Grid
         this.currentShape = new Hashtable();
         this.newShape = new Hashtable();
         this.initialShape = new Cell[this.cellRows][this.cellColumns];
+        this.savedInitialState = false;
         this.generation=0;
 
         this.grid=new Cell[this.cellRows][this.cellColumns];
@@ -169,12 +171,15 @@ public class Grid
     {
         Cell c;
 
+        if(savedInitialState)
+            return;
+
         Enumeration enumerate = currentShape.keys();
         while(enumerate.hasMoreElements())
         {
             c = (Cell) enumerate.nextElement();
             this.initialShape[c.x_axis][c.y_axis].setCellStatus(true);
         }
-
+        savedInitialState = true;
     }
 }

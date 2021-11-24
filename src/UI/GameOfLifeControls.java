@@ -2,21 +2,16 @@ package UI;
 import com.company.*;
 
 
-public class GameOfLifeControls implements UIListener
+public class GameOfLifeControls
 {
-    BLListener gameControls;
-    Board board;
+    UIInterfaceIn gameControls;
 
     public GameOfLifeControls(GameOfLife gc)
     {
         this.gameControls = gc;
-        this.gameControls.addUIListener(this);
+        //this.gameControls.addUIListener(this);
     }
 
-    public void setBoard(Board b)
-    {
-        this.board=b;
-    }
     public void setGOLControls(GameOfLife g)
     {
         gameControls = g;
@@ -42,11 +37,7 @@ public class GameOfLifeControls implements UIListener
         return gameControls.getCellStatus(x, y);
     }
 
-    //UIListener
-    public void updateGraphics(Grid g)
-    {
-        board.updateBoard(g);
-    }
+
 
 
 }
