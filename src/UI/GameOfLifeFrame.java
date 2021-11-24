@@ -22,8 +22,6 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
     JButton loadStateBtn;
     JButton viewStateBtn;
     JLabel genLabel;
-    //JButton a;
-    //JButton b;
     JSlider zoom_slider;
     JSlider speed_slider;
 
@@ -116,29 +114,24 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
                                           private void zoom_slider_StateChanged(ChangeEvent evt) {
                                               if(zoom_slider.getValue() >  zoom_prev_value) {
                                                   // slider value increased
-                                                  board.controls.gameControls.zoomChanged(5);
-                                                  board.updateBoard(board.controls.gameControls.getGrid());
-                                                  genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+                                               
                                               }
                                               if(zoom_slider.getValue() <  zoom_prev_value) {
                                                   // slider value decreased
-                                                  board.controls.gameControls.zoomChanged(0);
-                                                  board.updateBoard(board.controls.gameControls.getGrid());
-                                                  genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
+                                                
                                               }
                                               // Updating zoom_prev_value;
                                               zoom_prev_value= zoom_slider.getValue();
                                           }
                                       } );
+
         speed_slider.addChangeListener(new javax.swing.event.ChangeListener()
                 {
                     public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                        // speed_slider_StateChanged(evt);
+                         //speed_slider_StateChanged(evt);
                     }
+                          
                 } );
-
-
-
 
 
         startBtn.setLayout(null);
@@ -338,7 +331,12 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         }
         else if(e.getSource() == viewStateBtn)
         {
-            board.controls.gameControls.viewStateButtonClick();
+           // board.controls.gameControls.viewStateButtonClick();
+
+           String[][] states_saved= {
+                    {" rectangle"}, {" Box "}, {" Line "}, {" Square "}, {" Pentagon"}
+            };
+
         }
     }
 
