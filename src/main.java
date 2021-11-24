@@ -1,3 +1,4 @@
+import Console.Draw_listen;
 import Database.textDB;
 import Factory.Constants;
 import UI.GameOfLifeFrame;
@@ -18,6 +19,6 @@ public class main
         GameOfLifeFrame f = new GameOfLifeFrame(game);
         sqlDB db = new sqlDB(game);
         //textDB db = new textDB(game);
-
+        Draw_listen d=new Draw_listen();
     }
 }
