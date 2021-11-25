@@ -1,118 +1,179 @@
-package Database;
-
-import com.company.DBInterfaceIn;
-import com.company.Cell;
-import com.company.DBInterfaceOut;
-import com.company.GameOfLife;
+package com.company;
 
 import java.sql.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-public class sqlDB implements DBInterfaceOut
-{
+public class DATABASE {
+
+    TextFile Txt = new TextFile();
     Connection connect;
-    DBInterfaceIn gameControls;
 
-    public sqlDB(GameOfLife g)
-    {
-        gameControls = g;
-        g.addDBListener(this);
-    }
-
-    public void Connection()
-    {
-        try
-        {
-            String url = "jdbc:mysql://localhost/gol";
-            connect = DriverManager.getConnection(url, "root", "root");
-        }
-        catch (Exception e)
-        {
+    public void Connection() {
+        try {
+            String url = "jdbc:mysql://localhost/jdbc";        //connection string here test is the name of the database
+            connect = DriverManager.getConnection(url, "root", "m.mahad12");
+        } catch (Exception e) {
             System.out.println("NOT-CONNECTED");
             e.printStackTrace();
         }
     }
 
-    public void saveState(Hashtable<Cell, Cell> hashtable)                 //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
+    public void SavaState(Hashtable hashtable , String Name)     //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
     {
-        Cell c;
-        deleteState();
-        Connection();                                          //CREATING CONNECTION BETWEEN MYSQL AND JAVA
-        Enumeration e = hashtable.elements();                  //USE FOR ITERATING HASHTABLE
-        int x_axis, y_axis;
-        int val = 1;
-        while (e.hasMoreElements())                             //ITERATING ELEMENTS IN HASHTABLE
+        Connection();                                            //CREATING CONNECTION BETWEEN MYSQL AND JAVA
+        Enumeration e = hashtable.elements();                    //USE FOR ITERATING HASHTABLE
+        int x_axis, y_axis,val;
+
+        String sql = "Insert Into StateName Values ('" + Name +  "')";
+        try
         {
+            Statement statement = connect.createStatement();
+            statement.executeUpdate(sql);
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
 
-            c = (Cell) e.nextElement();
+        while (e.hasMoreElements())                               //ITERATING ELEMENTS IN HASHTABLE
+        {
+            TEST temp = new TEST();
+            temp = (TEST) e.nextElement();
 
-            x_axis = c.x_axis;
-            y_axis = c.y_axis;
-            String sql = "Insert Into CELLS Values ('" + val + "','" + x_axis + "','" + y_axis + "')";  //RUN THE SQL COMMAND
-
+            x_axis = temp.x_axis;
+            y_axis = temp.y_axis;
+            sql = "Insert Into CELLS (X_Axis,Y_Axis,Name) Values ('" + x_axis + "','" + y_axis + "','"+Name+"')";  //RUN THE SQL COMMAND
             try
             {
                 Statement statement = connect.createStatement();
                 statement.executeUpdate(sql);
-            } catch (SQLException ex)
+            }
+            catch (SQLException ex)
             {
                 ex.printStackTrace();
             }
-            val = val + 1;
         }
+        //Txt.save_state_txt(hashtable);
     }
 
-    public void deleteState()
+    public void DeleteRecentState()
     {
         Connection();
-        String url = "Delete From Cells";                      //DELETE THE ENTRIES FROM TABLE
+        int Id;
+        String Names;
+        String sql = "SELECT * from CELLS order by Id DESC LIMIT 1";
         try
         {
             Statement statement = connect.createStatement();
-            statement.executeUpdate(url);
+            ResultSet RT = statement.executeQuery(sql);
+            RT.next();
+            Names = RT.getString("Name");
+            PreparedStatement statement1 = connect.prepareStatement("Delete FROM CELLS where Name=?");
+            statement1.setString(1,Names);
+            statement1.executeUpdate();
         }
-        catch (SQLException e)
+        catch (SQLException throwables)
         {
-            e.printStackTrace();
+            throwables.printStackTrace();
         }
+
+        //Txt.clearTheFile();
     }
 
-    public Hashtable<Cell, Cell> loadState() {
+    public Hashtable LoadState() {
 
         Connection();
-        Hashtable<Cell, Cell> ht = new Hashtable<Cell, Cell>();     //CREATES A HASHTABLE FOR SAVING STATE
-        String sql = "SELECT * FROM CELLS";
+        String Names;
+        Hashtable<TEST, TEST> ht = new Hashtable<TEST, TEST>();     //CREATES A HASHTABLE FOR SAVING STATE
+        String sql = "SELECT * from CELLS order by Id DESC LIMIT 1,1";
 
         try
         {
             Statement statement = connect.createStatement();
             ResultSet RT = statement.executeQuery(sql);
+            RT.next();
+            Names = RT.getString("Name");
 
+            sql = "SELECT * from CELLS where Name='"+ Names +"'";
+            RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                Cell temp = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
+                TEST temp = new TEST();
+                temp.x_axis = RT.getInt("X_Axis");
+                temp.y_axis = RT.getInt("Y_Axis");
                 ht.put(temp, temp);
             }
         }
-        catch (SQLException ex)
+        catch (SQLException throwables)
         {
-            ex.printStackTrace();
+            throwables.printStackTrace();
         }
         return ht;
     }
 
-    public Hashtable<Cell, Cell> viewState()
+    public void DeleteState(String Names)
+    {
+        Connection();
+        try
+        {
+            Statement statement = connect.createStatement();
+            PreparedStatement statement1 = connect.prepareStatement("Delete FROM CELLS where Name=?");
+            statement1.setString(1,Names);
+            statement1.executeUpdate();
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+    }
+
+    public Hashtable ViewState(String Names)
     {
 
         Connection();
-        Hashtable<Cell, Cell> ht = new Hashtable<Cell, Cell>();
-        ht = loadState();
+        Hashtable<TEST, TEST> ht = new Hashtable<TEST, TEST>();     //CREATES A HASHTABLE FOR RETURNING TO BL
+        String sql = "SELECT * from CELLS where Name='"+ Names +"'";                                                   // CALLING LoadState() TO RETRIEVE THE DATA FROM MYSQL
+        try
+        {
+            Statement statement = connect.createStatement();
+            ResultSet RT = statement.executeQuery(sql);
+            while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
+            {
+                TEST temp = new TEST();
+                temp.x_axis = RT.getInt("X_Axis");
+                temp.y_axis = RT.getInt("Y_Axis");
+                ht.put(temp, temp);
+            }
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
         return ht;
     }
+    public String[] ReturnStates()
+    {
+        Connection();
+        String[] StateName = new String[30];
+        int val = 0;
+        String sql = "SELECT * from StateName";
+        try
+        {
+            Statement statement = connect.createStatement();
+            ResultSet RT = statement.executeQuery(sql);
+            while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
+            {
+                StateName[val] = RT.getString("Name");
+                val = val +1;
+            }
+            StateName[val] = "\0";
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+        return StateName;
+    }
 }
-
-
-
-
 
