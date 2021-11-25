@@ -1,36 +1,33 @@
 package com.company;
-import Factory.Factory;
+import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
-public class GameOfLife<audioStream>
+public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
 {
     public Grid grid;
-    public UIListener uiController;
+    public UIListener uiController = null;
+    public DBInterfaceOut dbListener = null;
     int counter;
     int zoom;
     int speed;
     boolean gameStatus;
-    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\gameOfLife.wav");
+
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
     AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
     Clip clip = AudioSystem.getClip();
 
+
     public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
-        this.grid = Factory.getGrid();
-        //this.canvas = new Canvas(this.grid);
-        this.speed = Factory.defaultSpeed;
-        this.zoom = Factory.currentZoom;
+        this.grid = new Grid();
+        this.speed = Constants.currentSpeed;
+        this.zoom = Constants.currentZoom;
         this.counter = 0;
-        this.setUIController();
         clip.open(audioStream);
-
-
-        /*Database db = new Database();
-        db.connect();
-        swing swing = new swing();
-        swing.Example();*/
     }
 
     public void start()
@@ -43,19 +40,50 @@ public class GameOfLife<audioStream>
         this.gameStatus = false;
         clip.stop();
     }
-    public void setUIController()
-    {
-        uiController = Factory.getController();
-    }
+
     public void reset()
     {
-        stop();
-        grid.clear();
+        grid.reset();
+        counter=0;
     }
+
+    //BLListener UI
     public boolean isGameRunning()
     {
         return this.gameStatus;
     }
+
+    @Override
+    public boolean getCellStatus(int x, int y)
+    {
+        return grid.getCellStatus(x, y);
+    }
+
+    @Override
+    public void setCell(int x, int y, boolean status)
+    {
+        grid.setCell(x, y, status);
+    }
+
+    @Override
+    public void next()
+    {
+        grid.next();
+        counter++;
+    }
+
+    @Override
+    public void clear()
+    {
+        grid.clear();
+        counter=0;
+    }
+    @Override
+    public void setGeneration()
+    {
+        counter=0;
+    }
+
     public void setZoom(int value)
     {
         this.zoom=value;
@@ -72,35 +100,122 @@ public class GameOfLife<audioStream>
     {
         return this.speed;
     }
-
-    void startStopButtonClick()
+    @Override
+    public void startStopButtonClick()
     {
         if(isGameRunning())
             stop();
         else
+        {
             start();
+            grid.saveInitialShape();
+        }
     }
-    void nextButtonClick()
+    @Override
+    public void nextButtonClick()
     {
         counter++;
         grid.next();
     }
-
-    void speedChanges(int value)
+    @Override
+    public void resetButtonClicked()
     {
-        setSpeed(value);
+        if(isGameRunning())
+        {
+            reset();
+        }
+        else
+            clear();
     }
-    void zoomChanged(int value)
+    @Override
+    public void zoomChanged(int value)
     {
         setZoom(value);
     }
-    void resetButtonClicked()
+    @Override
+    synchronized public void saveStateButtonClick()
     {
-        reset();
+        dbListener.saveState(this.grid.currentShape);
     }
+    @Override
+    synchronized public void deleteStateButtonClick()
+    {
+        dbListener.deleteState();
+    }
+    @Override
+    synchronized public void loadStateButtonClick()
+    {
+        Cell c;
+        Hashtable h;
+        h = dbListener.loadState();
+        grid.clear();
+        Enumeration enumerate = h.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            this.grid.setCell(c.x_axis, c.y_axis, true);
+        }
+    }
+    @Override
+    synchronized public Grid viewStateButtonClick()
+    {
+        Cell c;
+        Hashtable h;
+        h = dbListener.viewState();
+        Grid g = new Grid();
+
+        Enumeration enumerate = h.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            g.setCell(c.x_axis, c.y_axis, true);
+        }
+        return g;
+    }
+    @Override
+    public void speedChanged(int value)
+    {
+        setSpeed(value);
+    }
+
     void updateState()
     {
-        uiController.updateGraphics(grid);
+        if(uiController != null)
+            uiController.updateGraphics(grid);
+    }
+
+
+    public Grid getGrid()
+    {
+        return grid;
+    }
+
+    @Override
+    public int getGeneration() {
+        return counter;
+    }
+
+    public GameOfLife getGameOfLife()
+    {
+        return this;
+    }
+    public void addUIListener(UIListener l)
+    {
+        this.uiController = l;
+    }
+    public void detachUI()
+    {
+         this.uiController = null;
+    }
+
+    //BLListener_For_DB
+    public void addDBListener(DBInterfaceOut l)
+    {
+        this.dbListener = l;
+    }
+    public void detachDB()
+    {
+        this.dbListener = null;
     }
 
 }

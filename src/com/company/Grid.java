@@ -1,22 +1,26 @@
 package com.company;
 import java.util.*;
-import Factory.Factory;
+import Factory.Constants;
 
-public class Grid implements CellGrid
+public class Grid
 {
     public int cellRows;
     public int cellColumns;
     public Cell[][] grid;
     public Hashtable currentShape; //stores alive cells
     public Hashtable newShape; //stores new alive cells after counter
+    public Cell[][] initialShape;
+    private boolean savedInitialState;
     int generation;
 
     public Grid()
     {
-        this.cellRows = Factory.gridRows;
-        this.cellColumns = Factory.gridCols;
+        this.cellRows = Constants.gridRows;
+        this.cellColumns = Constants.gridCols;
         this.currentShape = new Hashtable();
         this.newShape = new Hashtable();
+        this.initialShape = new Cell[this.cellRows][this.cellColumns];
+        this.savedInitialState = false;
         this.generation=0;
 
         this.grid=new Cell[this.cellRows][this.cellColumns];
@@ -25,17 +29,16 @@ public class Grid implements CellGrid
             for(int j=0;j<this.cellColumns;j++)
             {
                 this.grid[i][j] = new Cell(i, j);
+                this.initialShape[i][j] = new Cell(i, j);
             }
         }
     }
 
-    @Override
     public boolean getCellStatus(int x, int y)
     {
         return grid[x][y].isAlive();
     }
 
-    @Override
     synchronized public void setCell(int x, int y, boolean status)
     {
         try
@@ -61,15 +64,28 @@ public class Grid implements CellGrid
 
     public void clear()
     {
-        grid = null;
-        currentShape = new Hashtable();
-        newShape = new Hashtable();
-        grid=new Cell[this.cellRows][this.cellColumns];
+        currentShape.clear();
+        newShape.clear();
         for(int i=0;i<this.cellRows;i++)
         {
             for(int j=0;j<this.cellColumns;j++)
             {
-                this.grid[i][j] = new Cell(i, j);
+                this.grid[i][j].setCellStatus(false);
+            }
+        }
+    }
+    public void reset()
+    {
+        clear();
+        for(int i=0;i<this.cellRows;i++)
+        {
+            for(int j=0;j<this.cellColumns;j++)
+            {
+                if(initialShape[i][j].isAlive())
+                {
+                    this.grid[i][j].setCellStatus(true);
+                    currentShape.put(this.grid[i][j], this.grid[i][j]);
+                }
             }
         }
     }
@@ -149,5 +165,21 @@ public class Grid implements CellGrid
         {
             //do nothing
         }
+    }
+
+    public void saveInitialShape()
+    {
+        Cell c;
+
+        if(savedInitialState)
+            return;
+
+        Enumeration enumerate = currentShape.keys();
+        while(enumerate.hasMoreElements())
+        {
+            c = (Cell) enumerate.nextElement();
+            this.initialShape[c.x_axis][c.y_axis].setCellStatus(true);
+        }
+        savedInitialState = true;
     }
 }
