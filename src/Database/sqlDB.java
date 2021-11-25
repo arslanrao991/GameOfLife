@@ -1,31 +1,47 @@
-package com.company;
+package Database;
+
+import com.company.DBInterfaceIn;
+import com.company.Cell;
+import com.company.DBInterfaceOut;
+import com.company.GameOfLife;
 
 import java.sql.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-public class DATABASE {
-
-    TextFile Txt = new TextFile();
+public class sqlDB implements DBInterfaceOut
+{
     Connection connect;
+    DBInterfaceIn gameControls;
 
-    public void Connection() {
-        try {
-            String url = "jdbc:mysql://localhost/jdbc";        //connection string here test is the name of the database
-            connect = DriverManager.getConnection(url, "root", "m.mahad12");
-        } catch (Exception e) {
+    public sqlDB(GameOfLife g)
+    {
+        gameControls = g;
+        g.addDBListener(this);
+    }
+
+    public void Connection()
+    {
+        try
+        {
+            String url = "jdbc:mysql://localhost/gol";
+            connect = DriverManager.getConnection(url, "root", "root");
+        }
+        catch (Exception e)
+        {
             System.out.println("NOT-CONNECTED");
             e.printStackTrace();
         }
     }
 
-    public void SavaState(Hashtable hashtable , String Name)     //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
+    public void saveState(Hashtable<Cell, Cell> hashtable , String name)     //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
     {
+        Cell c;
         Connection();                                            //CREATING CONNECTION BETWEEN MYSQL AND JAVA
         Enumeration e = hashtable.elements();                    //USE FOR ITERATING HASHTABLE
         int x_axis, y_axis,val;
 
-        String sql = "Insert Into StateName Values ('" + Name +  "')";
+        String sql = "Insert Into StateName Values ('" + name +  "')";
         try
         {
             Statement statement = connect.createStatement();
@@ -38,12 +54,11 @@ public class DATABASE {
 
         while (e.hasMoreElements())                               //ITERATING ELEMENTS IN HASHTABLE
         {
-            TEST temp = new TEST();
-            temp = (TEST) e.nextElement();
+            c = (Cell) e.nextElement();
+            x_axis = c.x_axis;
+            y_axis = c.y_axis;
 
-            x_axis = temp.x_axis;
-            y_axis = temp.y_axis;
-            sql = "Insert Into CELLS (X_Axis,Y_Axis,Name) Values ('" + x_axis + "','" + y_axis + "','"+Name+"')";  //RUN THE SQL COMMAND
+            sql = "Insert Into CELLS (X_Axis,Y_Axis,Name) Values ('" + x_axis + "','" + y_axis + "','"+name+"')";  //RUN THE SQL COMMAND
             try
             {
                 Statement statement = connect.createStatement();
@@ -54,23 +69,23 @@ public class DATABASE {
                 ex.printStackTrace();
             }
         }
-        //Txt.save_state_txt(hashtable);
     }
 
-    public void DeleteRecentState()
+
+    public void deleteRecentState()
     {
         Connection();
         int Id;
-        String Names;
+        String names;
         String sql = "SELECT * from CELLS order by Id DESC LIMIT 1";
         try
         {
             Statement statement = connect.createStatement();
             ResultSet RT = statement.executeQuery(sql);
             RT.next();
-            Names = RT.getString("Name");
+            names = RT.getString("Name");
             PreparedStatement statement1 = connect.prepareStatement("Delete FROM CELLS where Name=?");
-            statement1.setString(1,Names);
+            statement1.setString(1,names);
             statement1.executeUpdate();
         }
         catch (SQLException throwables)
@@ -78,14 +93,40 @@ public class DATABASE {
             throwables.printStackTrace();
         }
 
-        //Txt.clearTheFile();
     }
 
-    public Hashtable LoadState() {
+    @Override
+    public Hashtable<Cell, Cell> loadState(String name)
+    {
+        Cell c;
+        Connection();
+        Hashtable<Cell, Cell> ht = new Hashtable<Cell, Cell>();     //CREATES A HASHTABLE FOR RETURNING TO BL
+        String sql = "SELECT * from CELLS where Name='"+ name +"'";                                                   // CALLING LoadState() TO RETRIEVE THE DATA FROM MYSQL
+        try
+        {
+            Statement statement = connect.createStatement();
+            ResultSet RT = statement.executeQuery(sql);
+            while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
+            {
+                c = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
+                ht.put(c, c);
+            }
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
+        return ht;
+    }
+
+
+    public Hashtable<Cell, Cell> loadRecentState()
+    {
+        Cell c;
 
         Connection();
         String Names;
-        Hashtable<TEST, TEST> ht = new Hashtable<TEST, TEST>();     //CREATES A HASHTABLE FOR SAVING STATE
+        Hashtable<Cell, Cell> ht = new Hashtable<Cell, Cell>();     //CREATES A HASHTABLE FOR SAVING STATE
         String sql = "SELECT * from CELLS order by Id DESC LIMIT 1,1";
 
         try
@@ -99,10 +140,8 @@ public class DATABASE {
             RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                TEST temp = new TEST();
-                temp.x_axis = RT.getInt("X_Axis");
-                temp.y_axis = RT.getInt("Y_Axis");
-                ht.put(temp, temp);
+                c = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
+                ht.put(c, c);
             }
         }
         catch (SQLException throwables)
@@ -112,14 +151,15 @@ public class DATABASE {
         return ht;
     }
 
-    public void DeleteState(String Names)
+
+    public void deleteSelectedState(String names)
     {
         Connection();
         try
         {
             Statement statement = connect.createStatement();
             PreparedStatement statement1 = connect.prepareStatement("Delete FROM CELLS where Name=?");
-            statement1.setString(1,Names);
+            statement1.setString(1,names);
             statement1.executeUpdate();
         }
         catch (SQLException throwables)
@@ -128,52 +168,34 @@ public class DATABASE {
         }
     }
 
-    public Hashtable ViewState(String Names)
-    {
 
-        Connection();
-        Hashtable<TEST, TEST> ht = new Hashtable<TEST, TEST>();     //CREATES A HASHTABLE FOR RETURNING TO BL
-        String sql = "SELECT * from CELLS where Name='"+ Names +"'";                                                   // CALLING LoadState() TO RETRIEVE THE DATA FROM MYSQL
-        try
-        {
-            Statement statement = connect.createStatement();
-            ResultSet RT = statement.executeQuery(sql);
-            while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
-            {
-                TEST temp = new TEST();
-                temp.x_axis = RT.getInt("X_Axis");
-                temp.y_axis = RT.getInt("Y_Axis");
-                ht.put(temp, temp);
-            }
-        }
-        catch (SQLException throwables)
-        {
-            throwables.printStackTrace();
-        }
-        return ht;
-    }
-    public String[] ReturnStates()
+    public String[] getStates()
     {
         Connection();
-        String[] StateName = new String[30];
+        String[] stateNames = new String[30];
         int val = 0;
-        String sql = "SELECT * from StateName";
+        String sql = "SELECT DISTINCT(CELLS.NAME) from CELLS";
         try
         {
             Statement statement = connect.createStatement();
             ResultSet RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                StateName[val] = RT.getString("Name");
+                stateNames[val] = RT.getString("Name");
                 val = val +1;
             }
-            StateName[val] = "\0";
+            stateNames[val] = "\0";
         }
         catch (SQLException throwables)
         {
             throwables.printStackTrace();
         }
-        return StateName;
+        return stateNames;
     }
 }
+
+
+
+
+
 

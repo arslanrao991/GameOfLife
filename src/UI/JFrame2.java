@@ -96,7 +96,7 @@ public class JFrame2 extends JFrame implements KeyListener, ActionListener
             try
             {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                if(board.startY < Constants.gridRows - board.yPanel/Board.size)
+                if(board.startY < Constants.gridRows - board.yPanel/Board2.size)
                     board.startY += 1;
                 board.repaint();
             }
@@ -111,7 +111,7 @@ public class JFrame2 extends JFrame implements KeyListener, ActionListener
             {
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-                if(board.startX < Constants.gridCols -board.xPanel/Board.size)
+                if(board.startX < Constants.gridCols -board.xPanel/Board2.size)
                     board.startX += 1;
                 board.repaint();
             }

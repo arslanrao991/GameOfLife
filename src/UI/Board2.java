@@ -67,10 +67,9 @@ public class Board2 extends JPanel implements ActionListener
 
     }
 
-
     private void drawGraphics(Graphics g)
     {
-        g.setColor(Color.red);
+        g.setColor(Color.yellow);
 
         for(int x=0;x<yPanel/size;x++)
         {
@@ -108,8 +107,5 @@ public class Board2 extends JPanel implements ActionListener
     {
         repaint();
     }
-
-
-
 
 }

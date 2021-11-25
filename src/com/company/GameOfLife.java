@@ -1,4 +1,5 @@
 package com.company;
+import Database.sqlDB;
 import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
@@ -15,11 +16,10 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     int zoom;
     int speed;
     boolean gameStatus;
-
+    String s= new String("State 1");
     File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
     AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
     Clip clip = AudioSystem.getClip();
-
 
     public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
@@ -33,12 +33,12 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     public void start()
     {
         this.gameStatus = true;
-        clip.start();
+        //clip.start();
     }
     public void stop()
     {
         this.gameStatus = false;
-        clip.stop();
+        //clip.stop();
     }
 
     public void reset()
@@ -135,19 +135,20 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     @Override
     synchronized public void saveStateButtonClick()
     {
-        dbListener.saveState(this.grid.currentShape);
+        dbListener.saveState(this.grid.currentShape, s);
+        s ="State 2";
     }
     @Override
     synchronized public void deleteStateButtonClick()
     {
-        dbListener.deleteState();
+        dbListener.deleteRecentState();
     }
     @Override
     synchronized public void loadStateButtonClick()
     {
         Cell c;
         Hashtable h;
-        h = dbListener.loadState();
+        h = dbListener.loadRecentState();
         grid.clear();
         Enumeration enumerate = h.keys();
         while(enumerate.hasMoreElements())
@@ -156,12 +157,19 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
             this.grid.setCell(c.x_axis, c.y_axis, true);
         }
     }
+
     @Override
-    synchronized public Grid viewStateButtonClick()
+    public String[] getSavedStates()
+    {
+        return dbListener.getStates();
+    }
+
+    @Override
+    public Grid getState(String name)
     {
         Cell c;
         Hashtable h;
-        h = dbListener.viewState();
+        h = dbListener.loadState(name);
         Grid g = new Grid();
 
         Enumeration enumerate = h.keys();
@@ -172,6 +180,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         }
         return g;
     }
+
     @Override
     public void speedChanged(int value)
     {
