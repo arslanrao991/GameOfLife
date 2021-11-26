@@ -1,8 +1,6 @@
-package Factory;
+package Constants;
 
-import UI.Board;
 import UI.GameOfLifeControls;
-import com.company.Grid;
 
 public class Constants
 {

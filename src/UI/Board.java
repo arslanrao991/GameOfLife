@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import Factory.Constants;
+import Constants.Constants;
 import com.company.GameOfLife;
 import com.company.Grid;
 

@@ -1,7 +1,6 @@
 package UI;
 
-import Factory.Constants;
-import com.company.GameOfLife;
+import Constants.Constants;
 import com.company.Grid;
 
 import javax.swing.*;

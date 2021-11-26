@@ -1,16 +1,13 @@
 package UI;
 
-import Factory.Constants;
+import Constants.Constants;
 import com.company.GameOfLife;
 import com.company.Grid;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 
 public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListener
@@ -345,7 +342,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         {
             input_SaveState input_ss = new input_SaveState();
             System.out.println("Entered value is: "+ input_ss.get_string());
-            board.controls.gameControls.saveStateButtonClick();
+            board.controls.gameControls.saveStateButtonClick(input_ss.get_string());
             board.updateBoard(board.controls.gameControls.getGrid());
             genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
         }

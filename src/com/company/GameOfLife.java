@@ -1,6 +1,5 @@
 package com.company;
-import Database.sqlDB;
-import Factory.Constants;
+import Constants.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
@@ -33,12 +32,12 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     public void start()
     {
         this.gameStatus = true;
-        //clip.start();
+        clip.start();
     }
     public void stop()
     {
         this.gameStatus = false;
-        //clip.stop();
+        clip.stop();
     }
 
     public void reset()
@@ -111,6 +110,11 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
             grid.saveInitialShape();
         }
     }
+//    @Override
+//    public void onlyStopButtonClick()
+//    {
+//            stop();
+//    }
     @Override
     public void nextButtonClick()
     {
@@ -133,9 +137,9 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         setZoom(value);
     }
     @Override
-    synchronized public void saveStateButtonClick()
+    synchronized public void saveStateButtonClick(String str)
     {
-        dbListener.saveState(this.grid.currentShape, s);
+        dbListener.saveState(this.grid.currentShape, str);
         s ="State 2";
     }
     @Override

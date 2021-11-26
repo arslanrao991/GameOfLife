@@ -25,7 +25,7 @@ public interface UIInterfaceIn
     void speedChanged(int value);
     void zoomChanged(int value);
 
-    void saveStateButtonClick();
+    void saveStateButtonClick(String str);
     void deleteStateButtonClick();
     void loadStateButtonClick();
     String[] getSavedStates();
