@@ -73,7 +73,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     private void drawGraphics(Graphics g)
     {
-        g.setColor(Color.red);
+        g.setColor(Color.yellow);
 
         for(int x=0;x<yPanel/size;x++)
         {
@@ -111,12 +111,36 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     {
         this.xPanel = xPanel;
         this.yPanel = yPanel;
-        if(size != controls.getCurrentZoom())
+        int changedZoom = controls.getCurrentZoom();
+        if(size < changedZoom)
         {
-            size = controls.getCurrentZoom();
-            startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / size) / 2);
-            startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / size) / 2);
+            //size = controls.getCurrentZoom();
+            /*startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / changedZoom) / 2);
+            startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / changedZoom) / 2);*/
+            startX = startX + ((xPanel/size) - (xPanel/changedZoom))/2;
+            startY = startY + ((yPanel/size) - (yPanel/changedZoom))/2;
         }
+        else if (size > changedZoom)
+        {
+
+            /*startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / changedZoom) / 2);
+            startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / changedZoom) / 2);*/
+            if(((startX - ((xPanel/changedZoom) - (xPanel/size)))+(xPanel/changedZoom)) < Constants.gridCols && startX !=0)
+                startX = startX - ((xPanel/changedZoom)/2 - (xPanel/size)/2);
+            else if (startX != 0)
+                startX = startX - ((xPanel/changedZoom) - (xPanel/size));
+
+            if (((startY - ((yPanel/changedZoom) - (yPanel/size)))+(yPanel/changedZoom)) < Constants.gridRows && startY!=0)
+                startY = startY - ((yPanel/changedZoom)/2 - (yPanel/size)/2);
+            else if (startY != 0 )
+                startY = startY - ((yPanel/changedZoom) - (yPanel/size));
+
+            if(startX<0)
+                startX=0;
+            if(startY<0)
+                startY=0;
+        }
+        size = changedZoom;
     }
 
     public void actionPerformed(ActionEvent e)
@@ -127,7 +151,6 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void mouseDragged(MouseEvent e)
     {
-
         int x = (e.getX()/size)+startX;
         int y = (e.getY()/size)+startY;
         if(!controls.getCell(y, x) && clicked)

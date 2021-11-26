@@ -15,7 +15,7 @@ public interface UIInterfaceIn
     void setCell(int x, int y, boolean status);
     void next();
     void clear();
-    public void setGeneration();
+    void setGeneration();
 
 
     void startStopButtonClick();
@@ -28,6 +28,7 @@ public interface UIInterfaceIn
     void saveStateButtonClick();
     void deleteStateButtonClick();
     void loadStateButtonClick();
-    Grid viewStateButtonClick();
+    String[] getSavedStates();
+    Grid getState(String name);
 
 }

@@ -1,12 +1,12 @@
 package UI;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.*;
 
-public class jlist_view extends JFrame
+public class JListPanel extends JFrame implements ActionListener
 {
     JFrame frame;
     JList<String> state_list;
@@ -15,7 +15,8 @@ public class jlist_view extends JFrame
     JLabel txt = new JLabel("hello");
     JPanel list_panel;
     JButton  okay_button;
-    public jlist_view(String[] states_for_view)
+    public String selectedState;
+    public JListPanel(String[] states_for_view)
     {
         frame = new JFrame("Available states for view: ");
         frame.setBounds(300,300,400,300);
@@ -24,21 +25,24 @@ public class jlist_view extends JFrame
         state_list.setBorder(new EmptyBorder(10,20, 10, 10));
         stateListmodel = new DefaultListModel<>();
 
+
         list_panel = new JPanel();
 
         okay_button = new JButton(" Open");
-      //  okay_button.setPreferredSize(new Dimension(30,60));
+        okay_button.addActionListener(this);
 
 
         state_list.setModel(stateListmodel);
-        for (int i = 0; i < states_for_view.length; i++) {
+        for (int i = 0; i < states_for_view.length; i++)
+        {
             stateListmodel.addElement(states_for_view[i]);
         }
 
 
-        state_list.getSelectionModel().addListSelectionListener(e -> {
+        state_list.getSelectionModel().addListSelectionListener(e ->
+        {
+            //do nothing
 
-            System.out.println("index of selected is: " + state_list.getSelectedIndex());
         });
 
         state_list.setBackground(Color.darkGray);
@@ -67,13 +71,17 @@ public class jlist_view extends JFrame
         frame.setVisible(true);
     }
 
-    public static void main(String s[])
+    @Override
+    public void actionPerformed(ActionEvent e)
     {
-
-        String states[] = new String[3];
-        states[0] = "Rectangle";
-        states[1] = "Box";
-        states[2] = "Line";
-        new jlist_view(states);
+        if(e.getSource() == okay_button)
+        {
+            selectedState = new String(state_list.getSelectedValue());
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+        }
+    }
+    public String getSelectedState()
+    {
+        return selectedState;
     }
 }
