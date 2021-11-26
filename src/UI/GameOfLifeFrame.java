@@ -363,6 +363,8 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         }
         else if(e.getSource() == saveStateBtn)
         {
+            input_SaveState input_ss = new input_SaveState();
+            System.out.println("Entered value is: "+ input_ss.get_string());
             board.controls.gameControls.saveStateButtonClick();
             board.updateBoard(board.controls.gameControls.getGrid());
             genLabel.setText(Integer.toString(board.controls.gameControls.getGeneration()));
