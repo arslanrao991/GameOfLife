@@ -8,7 +8,7 @@ public interface DBInterfaceOut
     public void deleteRecentState();
     public Hashtable<Cell, Cell> loadState(String name);
     public Hashtable<Cell, Cell> loadRecentState();
-    public void deleteSelectedState(String names);
+    public void deleteState(String names);
     public String[] getStates();
 
 }

@@ -152,7 +152,7 @@ public class sqlDB implements DBInterfaceOut
     }
 
 
-    public void deleteSelectedState(String names)
+    public void deleteState(String names)
     {
         Connection();
         try

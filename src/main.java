@@ -1,6 +1,6 @@
 //import Database.textDB;
 import Console.mainFrame;
-import Database.textDB;
+import Database.TextDB;
 import Factory.Constants;
 import UI.GameOfLifeFrame;
 import com.company.GameOfLife;
@@ -17,9 +17,9 @@ public class main
     {
         Constants c = new Constants();
         GameOfLife game = new GameOfLife();
-        //textDB db = new textDB(game);
+        //TextDB db = new TextDB(game);
         sqlDB db = new sqlDB(game);
-        //mainFrame console = new mainFrame(game);
+        //mainFrame console = new mainFrame(game);Add Text DB and Interaction with BL (+DB Testing)
         GameOfLifeFrame f = new GameOfLifeFrame(game);
 
 
