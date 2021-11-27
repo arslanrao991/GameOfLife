@@ -81,7 +81,8 @@ public class textDB implements DBInterfaceOut
             String lineToRemove = name;
             String currentLine;
 
-            while((currentLine = reader.readLine()) != null) {
+            while((currentLine = reader.readLine()) != null)
+            {
                 // trim newline when comparing with lineToRemove
                 String trimmedLine = currentLine.trim();
                 if(trimmedLine.equals(lineToRemove)) continue;
