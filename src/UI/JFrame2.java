@@ -1,7 +1,5 @@
 package UI;
 
-import Factory.Constants;
-import com.company.GameOfLife;
 import com.company.Grid;
 
 import javax.swing.*;
@@ -39,13 +37,9 @@ public class JFrame2 extends JFrame implements KeyListener, ActionListener
 
         int menu1Y = (screenSize.height - (int) (screenSize.getHeight() * bottomControlsPanelRatio/100) + (int) (screenSize.getHeight() * bottomControlsPanelRatio/100)/3 - (int) (screenSize.getHeight() * bottomControlsPanelRatio/100)*26/100);
         int menu1Height = (int) (screenSize.getHeight() * bottomControlsPanelRatio/100)*26/100;
-        int menu1Spacing = (int) (screenSize.getWidth()*3/100);
 
-        int menu2Y = menu1Y + menu1Height*2;
-        int menu2Spacing = (int) (screenSize.width * 1.56 /100);;
-
-        int exitBtnWidth = (int) (screenSize.width * 20 /100);
-        int exitBtnX = (int) (screenSize.width/2) - exitBtnWidth/2;
+        int exitBtnWidth = (screenSize.width * 20 /100);
+        int exitBtnX = (screenSize.width/2) - exitBtnWidth/2;
 
 
         //adding Buttons to Frame
@@ -95,8 +89,7 @@ public class JFrame2 extends JFrame implements KeyListener, ActionListener
         {
             try
             {
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                if(board.startY < Constants.gridRows - board.yPanel/Board2.size)
+                if(board.startY < Board.rows - board.yPanel/Board2.size)
                     board.startY += 1;
                 board.repaint();
             }
@@ -109,9 +102,8 @@ public class JFrame2 extends JFrame implements KeyListener, ActionListener
         {
             try
             {
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-                if(board.startX < Constants.gridCols -board.xPanel/Board2.size)
+                if(board.startX < Board.cols -board.xPanel/Board2.size)
                     board.startX += 1;
                 board.repaint();
             }

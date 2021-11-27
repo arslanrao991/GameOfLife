@@ -12,7 +12,6 @@ public class JListPanel extends JFrame implements ActionListener
     JList<String> state_list;
     DefaultListModel<String> stateListmodel;
 
-    JLabel txt = new JLabel("hello");
     JPanel list_panel;
     JButton  okay_button;
     public String selectedState;
@@ -33,11 +32,10 @@ public class JListPanel extends JFrame implements ActionListener
 
 
         state_list.setModel(stateListmodel);
-        for (int i = 0; i < states_for_view.length; i++)
+        for (int i = 0; !states_for_view[i].equals("\0"); i++)
         {
             stateListmodel.addElement(states_for_view[i]);
         }
-
 
         state_list.getSelectionModel().addListSelectionListener(e ->
         {

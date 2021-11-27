@@ -9,12 +9,12 @@ import java.sql.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-public class sqlDB implements DBInterfaceOut
+public class MYSQLDB implements DBInterfaceOut
 {
     Connection connect;
-    DBInterfaceIn gameControls;
+    protected DBInterfaceIn gameControls;
 
-    public sqlDB(GameOfLife g)
+    public MYSQLDB(GameOfLife g)
     {
         gameControls = g;
         g.addDBListener(this);
@@ -36,10 +36,10 @@ public class sqlDB implements DBInterfaceOut
 
     public void saveState(Hashtable<Cell, Cell> hashtable , String name)     //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
     {
-        Cell c;
+        Cell cell;
         Connection();                                            //CREATING CONNECTION BETWEEN MYSQL AND JAVA
         Enumeration e = hashtable.elements();                    //USE FOR ITERATING HASHTABLE
-        int x_axis, y_axis,val;
+        int x_axis, y_axis;
 
         String sql = "Insert Into StateName Values ('" + name +  "')";
         try
@@ -47,16 +47,16 @@ public class sqlDB implements DBInterfaceOut
             Statement statement = connect.createStatement();
             statement.executeUpdate(sql);
         }
-        catch (SQLException throwables)
+        catch (SQLException throwable)
         {
-            throwables.printStackTrace();
+            throwable.printStackTrace();
         }
 
         while (e.hasMoreElements())                               //ITERATING ELEMENTS IN HASHTABLE
         {
-            c = (Cell) e.nextElement();
-            x_axis = c.x_axis;
-            y_axis = c.y_axis;
+            cell = (Cell) e.nextElement();
+            x_axis = cell.x_axis;
+            y_axis = cell.y_axis;
 
             sql = "Insert Into CELLS (X_Axis,Y_Axis,Name) Values ('" + x_axis + "','" + y_axis + "','"+name+"')";  //RUN THE SQL COMMAND
             try
@@ -75,22 +75,22 @@ public class sqlDB implements DBInterfaceOut
     public void deleteRecentState()
     {
         Connection();
-        int Id;
         String names;
         String sql = "SELECT * from CELLS order by Id DESC LIMIT 1";
         try
         {
             Statement statement = connect.createStatement();
             ResultSet RT = statement.executeQuery(sql);
-            RT.next();
+            if(!RT.next())
+                return;
             names = RT.getString("Name");
             PreparedStatement statement1 = connect.prepareStatement("Delete FROM CELLS where Name=?");
             statement1.setString(1,names);
             statement1.executeUpdate();
         }
-        catch (SQLException throwables)
+        catch (SQLException throwable)
         {
-            throwables.printStackTrace();
+            throwable.printStackTrace();
         }
 
     }
@@ -98,9 +98,9 @@ public class sqlDB implements DBInterfaceOut
     @Override
     public Hashtable<Cell, Cell> loadState(String name)
     {
-        Cell c;
+        Cell cell;
         Connection();
-        Hashtable<Cell, Cell> ht = new Hashtable<Cell, Cell>();     //CREATES A HASHTABLE FOR RETURNING TO BL
+        Hashtable<Cell, Cell> ht = new Hashtable<>();     //CREATES A HASHTABLE FOR RETURNING TO BL
         String sql = "SELECT * from CELLS where Name='"+ name +"'";                                                   // CALLING LoadState() TO RETRIEVE THE DATA FROM MYSQL
         try
         {
@@ -108,13 +108,13 @@ public class sqlDB implements DBInterfaceOut
             ResultSet RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                c = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
-                ht.put(c, c);
+                cell = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
+                ht.put(cell, cell);
             }
         }
-        catch (SQLException throwables)
+        catch (SQLException throwable)
         {
-            throwables.printStackTrace();
+            throwable.printStackTrace();
         }
         return ht;
     }
@@ -122,31 +122,32 @@ public class sqlDB implements DBInterfaceOut
 
     public Hashtable<Cell, Cell> loadRecentState()
     {
-        Cell c;
-
+        Cell cell;
         Connection();
-        String Names;
-        Hashtable<Cell, Cell> ht = new Hashtable<Cell, Cell>();     //CREATES A HASHTABLE FOR SAVING STATE
+        String names;
+        Hashtable<Cell, Cell> ht = new Hashtable<>();     //CREATES A HASHTABLE FOR SAVING STATE
         String sql = "SELECT * from CELLS order by Id DESC LIMIT 1,1";
 
         try
         {
             Statement statement = connect.createStatement();
             ResultSet RT = statement.executeQuery(sql);
-            RT.next();
-            Names = RT.getString("Name");
+            if(!RT.next())
+                return ht;
 
-            sql = "SELECT * from CELLS where Name='"+ Names +"'";
+            names = RT.getString("Name");
+
+            sql = "SELECT * from CELLS where Name='"+ names +"'";
             RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                c = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
-                ht.put(c, c);
+                cell = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
+                ht.put(cell, cell);
             }
         }
-        catch (SQLException throwables)
+        catch (SQLException throwable)
         {
-            throwables.printStackTrace();
+            throwable.printStackTrace();
         }
         return ht;
     }
@@ -157,14 +158,14 @@ public class sqlDB implements DBInterfaceOut
         Connection();
         try
         {
-            Statement statement = connect.createStatement();
+            connect.createStatement();
             PreparedStatement statement1 = connect.prepareStatement("Delete FROM CELLS where Name=?");
             statement1.setString(1,names);
             statement1.executeUpdate();
         }
-        catch (SQLException throwables)
+        catch (SQLException throwable)
         {
-            throwables.printStackTrace();
+            throwable.printStackTrace();
         }
     }
 
@@ -186,9 +187,9 @@ public class sqlDB implements DBInterfaceOut
             }
             stateNames[val] = "\0";
         }
-        catch (SQLException throwables)
+        catch (SQLException throwable)
         {
-            throwables.printStackTrace();
+            throwable.printStackTrace();
         }
         return stateNames;
     }

@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListener
@@ -32,8 +33,21 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
 
     double bottomControlsPanelRatio = 15.75;
 
-    public GameOfLifeFrame(GameOfLife g)
+    public GameOfLifeFrame(GameOfLife g) throws InterruptedException
     {
+        /*setLayout(null);
+
+        setContentPane(new JLabel(new ImageIcon("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\UI\\pinkBackground.jpg")));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setUndecorated(true);
+        setVisible(true);
+
+        /TimeUnit.MILLISECONDS.sleep(1200);
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));*/
+
+
+
+
         f.setBackground(Color.blue);
         f.setLayout(null);
 
@@ -249,8 +263,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         {
             try
             {
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                if(board.startY < Constants.gridRows - board.yPanel/Board.size)
+                if(board.startY < Board.rows - board.yPanel/Board.size)
                     board.startY += 1;
                 board.repaint();
             }
@@ -305,9 +318,14 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
 
             Thread GameLoop = new Thread(new Runnable()
             {
+
                 @Override
                 public void run()
                 {
+                    saveStateBtn.setVisible(false);
+                    loadStateBtn.setVisible(false);
+                    viewStateBtn.setVisible(false);
+                    deleteStateBtn.setVisible(false);
                     while(board.controls.gameControls.isGameRunning())
                     {
                         board.controls.gameControls.next();
@@ -324,6 +342,11 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
                     }
                     startBtn.setText("Start");
                     resetBtn.setText("Clear");
+
+                    saveStateBtn.setVisible(true);
+                    loadStateBtn.setVisible(true);
+                    viewStateBtn.setVisible(true);
+                    deleteStateBtn.setVisible(true);
                 }
             });
             GameLoop.start();

@@ -12,19 +12,14 @@ public class Board2 extends JPanel implements ActionListener
 {
     GameOfLifeControls controls;
 
-    static final int cols = Constants.gridCols;
-    static final int rows = Constants.gridRows;
-    static final int originX = 0;
-    static final int originY = 0;
-    public static int size;
-
-
+    protected static final int cols = Constants.gridCols;
+    protected static final int rows = Constants.gridRows;
+    protected static final int originX = 0;
+    protected static final int originY = 0;
+    protected static int size;
+    protected int startX, startY;
     int xPanel, yPanel;
-    public int startX, startY;
-
     Grid life;
-    boolean clicked = false;
-
 
     public Board2(int xPanel, int yPanel, Grid g)
     {
@@ -32,8 +27,8 @@ public class Board2 extends JPanel implements ActionListener
         this.xPanel = xPanel;
         this.yPanel = yPanel;
         size = Constants.maxZoomOut;
-        startX = (xPanel/ Constants.maxZoomOut)/2-((xPanel/size)/2);
-        startY = (yPanel/ Constants.maxZoomOut)/2-((yPanel/size)/2);
+        startX = (cols)/2-((xPanel/size)/2);
+        startY = (rows)/2-((yPanel/size)/2);
 
         life = g;
 
@@ -77,7 +72,7 @@ public class Board2 extends JPanel implements ActionListener
             {
                 try
                 {
-                    if(life.grid[(x+startY)][(y+startX)].isAlive())
+                    if(life.getCellStatus((x+startY), (y+startX)))
                         g.fillRect((1+y*size), (1+x*size), size-2, size-2);
                 }
                 catch (ArrayIndexOutOfBoundsException e)

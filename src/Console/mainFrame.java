@@ -1,201 +1,209 @@
 package Console;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 import Factory.Constants;
 import com.company.GameOfLife;
 import com.company.Grid;
 
-public class mainFrame
+public class MainFrame
 {
-    gameControls gameControls;
+    ConsoleControls gameControls;
     private static final int rows= Constants.gridRows;
     private static final int cols=Constants.gridCols;
-    private static final int originX = 0;
-    private static final int originY = 0;
-    private int startX;
-    private int startY;
-    private int consoleC = 24;
-    private int consoleR = 20;
+    protected int startX;
+    protected int startY;
+    private int consoleC;
+    private int consoleR;
 
-    private static int  size =5;
+    private int speed;
+    private int zoom;
 
-    private static boolean[][] cell_life = new boolean[rows][cols];
-    private static boolean[][] state_cell = new boolean[rows][cols];
-    boolean start = true;
-    int check=0;
+    private static boolean[][] life;
+    private static boolean[][] tempGrid;
 
-    public mainFrame(GameOfLife g)
+    public MainFrame(GameOfLife g)
     {
         startX = 0;
         startY = 0;
-//       System.out.println(" Choose your option:\n" + "1-> PLAY  2->Stop  3->Save State   4->Load State 5->Clear 6-> Enter Input" +
-//               "7-> Exit \n");
-        this.gameControls = new gameControls(g);
-        fill_grid(gameControls.gameControls.getGrid());
+        speed = Constants.currentSpeed;
+        zoom = Constants.currentZoom;
+        consoleC = cols/zoom;
+        consoleR = rows/zoom;
+        life = new boolean[rows][cols];
+        tempGrid = new boolean[rows][cols];
+
+        this.gameControls = new ConsoleControls(g);
         updateBoard(gameControls.gameControls.getGrid());
+        label:
         while(true)
         {
-            clear_full_screen();
+            clearConsole();
             // draw_grid();
-            System.out.println(" Choose your option:\n" + "1-> PLAY  2->Stop  3->Save State   4->Load State 5->Reset  6->Enter Input " +
-                    " 7->Exit  8->Next State  9->Delete State  10->Speed Increase 11->Speed Decrease \n");
+            System.out.println("""
+                     Choose your option:
+                    1-> Start/Stop
+                    2->View Saved States
+                    3->Save State
+                    4->Load State
+                    5->Reset/Clear
+                    6->Enter Input\s
+                    7->Exit
+                    8->Next State
+                    9->Delete State
+                    10->Speed Increase
+                    11->Speed Decrease
+                    12->Zoom In
+                    13->Zoom out""");
             Scanner input_obj = new Scanner(System.in);
             String choice = input_obj.nextLine();
-            if (choice.equals("1"))
-                start();
-            else if (choice.equals("2"))
-                stop();
-            else if (choice.equals("3"))
-                Save();
-            else if (choice.equals("4"))
-                Load();
-            else if (choice.equals("5"))
-                Clear();
-            else if (choice.equals("6"))
+            switch (choice)
             {
-                if (enter_input() == -1)
-                {
-                    System.out.println("You have entered illegal col or row number! ");
+                case "1":
+                    startStopButtonClicked();
                     break;
-                }
-            } else if (choice.equals("7"))
-                break;
-            else if(choice.equals("8"))
-                nxt_button();
-            else if(choice.equals("9"))
-                delete_state();
-            else if(choice.equals("10"))
-                speed_increase();
-            else if(choice.equals("11"))
-                speed_decrease();
+                case "2":
+                    viewStatesButtonClicked();
+                    break;
+                case "3":
+                    saveStateButtonClicked();
+                    break;
+                case "4":
+                    loadStateButtonClicked();
+                    break;
+                case "5":
+                    resetButtonClicked();
+                    break;
+                case "6":
+                    if (selectCell() == -1)
+                    {
+                        System.out.println("You have entered illegal col or row number! ");
+                        break label;
+                    }
+                    break;
+                case "7":
+                    break label;
+                case "8":
+                    nextButtonClicked();
+                    break;
+                case "9":
+                    deleteStateButtonClicked();
+                    break;
+                case "10":
+                    incSpeed();
+                    break;
+                case "11":
+                    decSpeed();
+                    break;
+                case "12":
+                    incZoom();
+                    break;
+                case "13":
+                    decZoom();
+                    break;
+            }
         }
     }
     // Drawing grid along with filling active cells with 0 based on cell_life hashmap
-    public void draw_grid()
+    public void drawBoard()
     {
-        for (int i = 0; i < startY + consoleR; i++) {
-
-
+        for (int i = 0; i < startY + consoleR; i++)
+        {
             for (int j = 0; j < startX + consoleC ; j++)
             {
-                System.out.print("|_");
-                if(cell_life[i][j] == true)
-                    System.out.print("0");
+                //System.out.print(" ");
+                if(life[i][j])
+                    System.out.print(" # ");
                 else
-                    System.out.print("_");
+                    System.out.print(" . ");
 
-                System.out.print("_");
+                //System.out.print(".");
             }
-            System.out.print("|\n");
-
+            System.out.print(" \n");
         }
+        System.out.print("\n\n");
     }
-    public void draw_grid_for_shapes()
+    public void drawViewStateBoard()
     {
         for (int i = 0; i < rows; i++)
         {
-
             for (int j = 0; j < cols ; j++)
             {
-                System.out.print("|_");
 
-                if(state_cell[i][j] == true)
-                    System.out.print("0");
+                if(tempGrid[i][j])
+                    System.out.print(" 0 ");
                 else
-                    System.out.print("_");
+                    System.out.print(" . ");
 
-                System.out.print("_");
             }
-            System.out.print("|\n");
+            System.out.print(" \n");
 
         }
     }
-    public  void fill_grid(Grid g)
-    {
-        int val;
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < cols; j++)
-            {
-                val= (int) (Math.random()* 2);
-                if( val == 0) {
-                    gameControls.gameControls.setCell(i,j,true);
-                }
-            }
-
-        }
-
-    }
-    public int enter_input()
+    public int selectCell()
     {
         int x, y;
         Scanner input_obj= new Scanner(System.in);
-        System.out.println("Enter row number of cell you want to be active from the range 0 -"+ rows);
+        System.out.println("-- Set Cell --\n");
+        System.out.println("Enter Row# (0 -"+ rows+" )");
         x= input_obj.nextInt();
-        if(x < 0 || x > rows) {
+        if(x < 0 || x > rows)
+        {
             System.out.println("You have entered illegal row number! ");
             return -1;
         }
-        System.out.println("Enter column number of cell you want to be active from the range 0 -" + cols);
+        System.out.println("Enter Column# (0 -"+ cols+" )");
         y= input_obj.nextInt();
-        if(y < 0 || y > cols) {
+        if(y < 0 || y > cols)
+        {
             System.out.println("You have entered illegal col number! ");
             return -1;
         }
 
-        set_cell(x,y);
+        setCell(x,y);
         return 0;
     }
-    public static void set_cell(int a,int b)
+    public void setCell(int a, int b)
     {
-        cell_life[a][b]= true;
+        if(!gameControls.getCell(a, b))
+            gameControls.setCell(a, b, true);
+        else
+            gameControls.setCell(a, b, false);
+        updateBoard(gameControls.gameControls.getGrid());
     }
     public void updateBoard(Grid g)
     {
-        //setDimensions(xPanel, yPanel);
         for(int i = 0; i< rows; i++)
         {
             for(int j = 0; j< cols; j++)
             {
-                cell_life[i][j] = g.grid[i][j].isAlive();
+                life[i][j] = g.getCellStatus(i, j);
             }
         }
-        draw_grid();
+        drawBoard();
+
     }
-    public void update_for_shapes(Grid g)
+    public void updateViewStateBoard(Grid g)
     {
-        //setDimensions(xPanel, yPanel);
         for(int i = 0; i< startY + consoleR; i++)
         {
             for(int j = 0; j< startX + consoleC; j++)
             {
-                state_cell[i][j] = g.grid[i][j].isAlive();
+                tempGrid[i][j] = g.getCellStatus(i, j);
             }
         }
-        draw_grid_for_shapes();
-    }
-
-    // function to manage speed of the game!
-    private void slow_down(int delay)
-    {
-        try {
-            Thread.sleep(delay);
-        }
-        catch (InterruptedException excep)
-        {
-            Thread.currentThread().interrupt();
-        }
+        drawViewStateBoard();
     }
 
     //function to clear the whole screen!
-    private static void clear_full_screen()
+    private static void clearConsole()
     {
-        System.out.println("\003[H\003[2J");
+        System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
-    protected void start()
+    protected void startStopButtonClicked()
     {
         System.out.println(" Play button clicked");
         //start = true;
@@ -212,75 +220,102 @@ public class mainFrame
 
                     try
                     {
-                        Thread.sleep(gameControls.gameControls.getSpeed());
+                        Thread.sleep(speed);
                     }
                     catch(InterruptedException e)
                     {
-
+                        //do nothing
                     }
                 }
             }
         });
         GameLoop.start();
     }
-    protected void nxt_button()
+    protected void nextButtonClicked()
     {
+        //clear_full_screen();
         System.out.println(" Next Button clicked");
         gameControls.gameControls.nextButtonClick();
         updateBoard(gameControls.gameControls.getGrid());
     }
-    protected void stop()
-    {
-        //start = false;
-        System.out.println(" Stop button clicked");
-        gameControls.gameControls.startStopButtonClick();
-    }
     // clear or reset button!
-    protected void Clear()
+    protected void resetButtonClicked()
     {
         System.out.println(" Reset button clicked");
         gameControls.gameControls.resetButtonClicked();
         updateBoard(gameControls.gameControls.getGrid());
     }
-    protected void Load()
+    protected void loadStateButtonClicked()
     {
         System.out.println(" Load button clicked");
         gameControls.gameControls.loadStateButtonClick();
-        update_for_shapes(gameControls.gameControls.getGrid());
+        updateBoard(gameControls.gameControls.getGrid());
     }
 
-    protected void Save()
+    protected void saveStateButtonClicked()
     {
         System.out.println(" Save button clicked");
         Scanner input_state_name = new Scanner(System.in);
         // state name!
+        System.out.print("Enter State Name-> ");
         String state_name = input_state_name.nextLine();
         gameControls.gameControls.saveStateButtonClick(state_name);
         System.out.print("Out from save State");
         updateBoard(gameControls.gameControls.getGrid());
     }
-    protected void delete_state()
+    protected void deleteStateButtonClicked()
     {
         gameControls.gameControls.deleteStateButtonClick();
-        update_for_shapes(gameControls.gameControls.getGrid());
     }
-    protected void speed_decrease()
+    protected void decSpeed()
     {
-
+        if(speed>Constants.maxSpeed)
+        {
+            gameControls.gameControls.speedChanged(speed - 180);
+            speed-=180;
+        }
+        updateBoard(gameControls.gameControls.getGrid());
     }
-    protected void speed_increase()
+    protected void incSpeed()
     {
-
+        if(speed<Constants.minSpeed)
+        {
+            gameControls.gameControls.speedChanged(speed + 180);
+            speed+=180;
+        }
+        updateBoard(gameControls.gameControls.getGrid());
+    }
+    protected void incZoom()
+    {
+        if(zoom<Constants.maxZoomIn)
+        {
+            gameControls.gameControls.speedChanged(zoom + 5);
+            zoom+=5;
+        }
+        consoleC = cols/zoom;
+        consoleR = rows/zoom;
+        updateBoard(gameControls.gameControls.getGrid());
+    }
+    protected void decZoom()
+    {
+        if(zoom>Constants.maxZoomOut)
+        {
+            gameControls.gameControls.speedChanged(zoom - 5);
+            zoom-=5;
+        }
+        consoleC = cols/zoom;
+        consoleR = rows/zoom;
+        updateBoard(gameControls.gameControls.getGrid());
     }
 
-    protected void view_saved_states()
+    protected void viewStatesButtonClicked()
     {
         String[] list = gameControls.gameControls.getSavedStates();
 
         if(list != null)
         {
             System.out.println("Enter name of the state from following: \n");
-            for (int i = 0; i < list.length; i++)
+            for (int i = 0; !Objects.equals(list[i], "\0"); i++)
             {
                 System.out.println(i + ". " + list[i] + " ");
             }
@@ -288,11 +323,10 @@ public class mainFrame
             Scanner view_input = new Scanner(System.in);
             String choice = view_input.nextLine();
             Grid g = gameControls.gameControls.getState(choice);
-            update_for_shapes(g);
+            updateViewStateBoard(g);
         }
         else
             System.out.println("No state is saved yet! \n");
-        //final String[] selectedState = {null};
     }
 
 }

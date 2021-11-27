@@ -1,5 +1,4 @@
 package com.company;
-import Database.sqlDB;
 import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
@@ -9,16 +8,16 @@ import java.util.Hashtable;
 
 public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
 {
-    public Grid grid;
-    public UIListener uiController = null;
-    public DBInterfaceOut dbListener = null;
-    int counter;
-    int zoom;
-    int speed;
-    boolean gameStatus;
-    //File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\gameOfLife.wav");
-    //AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-    //Clip clip = AudioSystem.getClip();
+    protected Grid grid;
+    protected UIListenerOut uiController = null;
+    protected DBInterfaceOut dbListener = null;
+    protected int counter;
+    protected int zoom;
+    protected int speed;
+    protected boolean gameStatus;
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
+    AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+    Clip clip = AudioSystem.getClip();
 
     public  GameOfLife() throws LineUnavailableException, UnsupportedAudioFileException, IOException
     {
@@ -26,19 +25,19 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         this.speed = Constants.currentSpeed;
         this.zoom = Constants.currentZoom;
         this.counter = 0;
-        //clip.open(audioStream);
+        clip.open(audioStream);
 
     }
 
     public void start()
     {
         this.gameStatus = true;
-        //clip.loop(Clip.LOOP_CONTINUOUSLY);
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     public void stop()
     {
         this.gameStatus = false;
-        //clip.stop();
+        clip.stop();
     }
 
     public void reset()
@@ -203,11 +202,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         return counter;
     }
 
-    public GameOfLife getGameOfLife()
-    {
-        return this;
-    }
-    public void addUIListener(UIListener l)
+    public void addUIListener(UIListenerOut l)
     {
         this.uiController = l;
     }

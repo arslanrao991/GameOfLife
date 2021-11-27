@@ -12,12 +12,12 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 {
     GameOfLifeControls controls;
 
-    static final int cols = Constants.gridCols;
-    static final int rows = Constants.gridRows;
-    static final int originX = 0;
-    static final int originY = 0;
-    public static int size;
-    public static int delay;
+    protected static final int cols = Constants.gridCols;
+    protected static final int rows = Constants.gridRows;
+    protected static final int originX = 0;
+    protected static final int originY = 0;
+    protected static int size;
+    protected static int delay;
 
 
     int xPanel, yPanel;
@@ -34,8 +34,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         this.yPanel = yPanel;
         size = controls.getCurrentZoom();
         delay = controls.getCurrentSpeed();
-        startX = (xPanel/ Constants.maxZoomOut)/2-((xPanel/size)/2);
-        startY = (yPanel/ Constants.maxZoomOut)/2-((yPanel/size)/2);
+        startX = (cols)/2-((xPanel/size)/2);
+        startY = (rows)/2-((yPanel/size)/2);
 
         life = new boolean[Constants.gridRows][Constants.gridCols];
 
@@ -73,7 +73,7 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     private void drawGraphics(Graphics g)
     {
-        g.setColor(Color.yellow);
+        g.setColor(Color.PINK);
 
         for(int x=0;x<yPanel/size;x++)
         {
@@ -97,11 +97,11 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     public void updateBoard(Grid g)
     {
         setDimensions(xPanel, yPanel);
-        for(int i = 0; i< Constants.gridRows; i++)
+        for(int i = 0; i< rows; i++)
         {
-            for(int j = 0; j< Constants.gridCols; j++)
+            for(int j = 0; j< cols; j++)
             {
-                life[i][j] = g.grid[i][j].isAlive();
+                life[i][j] = g.getCellStatus(i, j);
             }
         }
         repaint();
@@ -114,9 +114,10 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
         int changedZoom = controls.getCurrentZoom();
         if(size < changedZoom)
         {
-            //size = controls.getCurrentZoom();
-            /*startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / changedZoom) / 2);
+            /*size = controls.getCurrentZoom();
+            startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / changedZoom) / 2);
             startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / changedZoom) / 2);*/
+
             startX = startX + ((xPanel/size) - (xPanel/changedZoom))/2;
             startY = startY + ((yPanel/size) - (yPanel/changedZoom))/2;
         }
@@ -125,14 +126,15 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
             /*startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / changedZoom) / 2);
             startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / changedZoom) / 2);*/
+
             int xOriginCalculation = ((startX - ((xPanel/changedZoom)/2 - (xPanel/size)/2))+(xPanel/changedZoom));
             int yOriginCalculation = ((startY - ((yPanel/changedZoom)/2 - (yPanel/size)/2))+(yPanel/changedZoom));
-            if(xOriginCalculation < Constants.gridCols && startX !=0)
+            if(xOriginCalculation < cols && startX !=0)
                 startX = startX - ((xPanel/changedZoom)/2 - (xPanel/size)/2);
             else if (startX != 0)
                 startX = startX - ((xPanel/changedZoom) - (xPanel/size));
 
-            if (yOriginCalculation < Constants.gridRows && startY!=0)
+            if (yOriginCalculation < rows && startY!=0)
                 startY = startY - ((yPanel/changedZoom)/2 - (yPanel/size)/2);
             else if (startY != 0 )
                 startY = startY - ((yPanel/changedZoom) - (yPanel/size));
@@ -143,13 +145,13 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
                 startX=0;
             if(startY<0)
                 startY=0;
-            if(xOriginCalculation>Constants.gridCols)
+            if(xOriginCalculation > cols)
             {
-                startX = Constants.gridCols-xOriginCalculation;
+                startX = cols-xOriginCalculation;
             }
-            if(yOriginCalculation>Constants.gridRows)
+            if(yOriginCalculation > rows)
             {
-                startY = Constants.gridRows-yOriginCalculation;
+                startY = rows-yOriginCalculation;
             }
         }
         size = changedZoom;

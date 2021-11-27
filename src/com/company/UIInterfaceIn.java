@@ -2,13 +2,13 @@ package com.company;
 
 public interface UIInterfaceIn
 {
-    public int getZoom();
-    public int getSpeed();
-    public Grid getGrid();
-    public int getGeneration();
-    public void addUIListener(UIListener l);
-    public void detachUI();
-    public boolean isGameRunning();
+    int getZoom();
+    int getSpeed();
+    Grid getGrid();
+    int getGeneration();
+    void addUIListener(UIListenerOut l);
+    void detachUI();
+    boolean isGameRunning();
 
 
     boolean getCellStatus(int x, int y);

@@ -2,11 +2,11 @@ package Console;
 import com.company.GameOfLife;
 import com.company.UIInterfaceIn;
 
-public class gameControls
+public class ConsoleControls
 {
     UIInterfaceIn gameControls;
 
-    public gameControls(GameOfLife gc)
+    public ConsoleControls(GameOfLife gc)
     {
         this.gameControls = gc;
         //this.gameControls.addUIListener(this);

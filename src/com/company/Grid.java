@@ -6,12 +6,12 @@ public class Grid
 {
     public int cellRows;
     public int cellColumns;
-    public Cell[][] grid;
-    public Hashtable currentShape; //stores alive cells
-    public Hashtable newShape; //stores new alive cells after counter
-    public Cell[][] initialShape;
-    private boolean savedInitialState;
-    int generation;
+    protected Cell[][] grid;
+    protected Hashtable currentShape; //stores alive cells
+    protected Hashtable newShape; //stores new alive cells after counter
+    protected Cell[][] initialShape;
+    protected boolean savedInitialState;
+    protected  int generation;
 
     public Grid()
     {
@@ -90,6 +90,7 @@ public class Grid
         }
     }
 
+    //apply rules on current state and update it to new shape
     public void next()
     {
         this.generation++;
