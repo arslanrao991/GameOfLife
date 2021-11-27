@@ -1,5 +1,6 @@
 package com.company;
-import Constants.Constants;
+import Database.sqlDB;
+import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +16,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     int zoom;
     int speed;
     boolean gameStatus;
-    String s= new String("State 1");
-    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\gameOfLife.wav");
     AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
     Clip clip = AudioSystem.getClip();
 
@@ -27,17 +27,18 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         this.zoom = Constants.currentZoom;
         this.counter = 0;
         clip.open(audioStream);
+
     }
 
     public void start()
     {
         this.gameStatus = true;
-        clip.start();
+        //clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
     public void stop()
     {
         this.gameStatus = false;
-        clip.stop();
+        //clip.stop();
     }
 
     public void reset()
@@ -110,11 +111,6 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
             grid.saveInitialShape();
         }
     }
-//    @Override
-//    public void onlyStopButtonClick()
-//    {
-//            stop();
-//    }
     @Override
     public void nextButtonClick()
     {
@@ -137,10 +133,9 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         setZoom(value);
     }
     @Override
-    synchronized public void saveStateButtonClick(String str)
+    synchronized public void saveStateButtonClick(String name)
     {
-        dbListener.saveState(this.grid.currentShape, str);
-        s ="State 2";
+        dbListener.saveState(this.grid.currentShape, name);
     }
     @Override
     synchronized public void deleteStateButtonClick()

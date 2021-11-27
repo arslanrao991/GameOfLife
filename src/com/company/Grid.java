@@ -1,6 +1,6 @@
 package com.company;
 import java.util.*;
-import Constants.Constants;
+import Factory.Constants;
 
 public class Grid
 {

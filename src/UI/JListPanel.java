@@ -76,6 +76,12 @@ public class JListPanel extends JFrame implements ActionListener
     {
         if(e.getSource() == okay_button)
         {
+            if(state_list.getSelectedValue() == null)
+            {
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                return;
+            }
+
             selectedState = new String(state_list.getSelectedValue());
             frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
         }

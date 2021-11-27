@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import Constants.Constants;
+import Factory.Constants;
 import com.company.GameOfLife;
 import com.company.Grid;
 
@@ -125,20 +125,32 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
             /*startX = (xPanel / Constants.maxZoomOut) / 2 - ((xPanel / changedZoom) / 2);
             startY = (yPanel / Constants.maxZoomOut) / 2 - ((yPanel / changedZoom) / 2);*/
-            if(((startX - ((xPanel/changedZoom) - (xPanel/size)))+(xPanel/changedZoom)) < Constants.gridCols && startX !=0)
+            int xOriginCalculation = ((startX - ((xPanel/changedZoom)/2 - (xPanel/size)/2))+(xPanel/changedZoom));
+            int yOriginCalculation = ((startY - ((yPanel/changedZoom)/2 - (yPanel/size)/2))+(yPanel/changedZoom));
+            if(xOriginCalculation < Constants.gridCols && startX !=0)
                 startX = startX - ((xPanel/changedZoom)/2 - (xPanel/size)/2);
             else if (startX != 0)
                 startX = startX - ((xPanel/changedZoom) - (xPanel/size));
 
-            if (((startY - ((yPanel/changedZoom) - (yPanel/size)))+(yPanel/changedZoom)) < Constants.gridRows && startY!=0)
+            if (yOriginCalculation < Constants.gridRows && startY!=0)
                 startY = startY - ((yPanel/changedZoom)/2 - (yPanel/size)/2);
             else if (startY != 0 )
                 startY = startY - ((yPanel/changedZoom) - (yPanel/size));
 
+            xOriginCalculation = startX+(xPanel/changedZoom);
+            yOriginCalculation = startY+(yPanel/changedZoom);
             if(startX<0)
                 startX=0;
             if(startY<0)
                 startY=0;
+            if(xOriginCalculation>Constants.gridCols)
+            {
+                startX = Constants.gridCols-xOriginCalculation;
+            }
+            if(yOriginCalculation>Constants.gridRows)
+            {
+                startY = Constants.gridRows-yOriginCalculation;
+            }
         }
         size = changedZoom;
     }

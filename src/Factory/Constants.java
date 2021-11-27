@@ -1,6 +1,8 @@
-package Constants;
+package Factory;
 
+import UI.Board;
 import UI.GameOfLifeControls;
+import com.company.Grid;
 
 public class Constants
 {
@@ -11,8 +13,8 @@ public class Constants
     public static int currentZoom = 20;
     public static int maxZoomOut = 5;
     public static int maxZoomIn = 35;
-    public static int gridResolutionWidth = 1280;
-    public static int getGridResolutionHeight = 674;
+    public static int gridResolutionWidth = 1380;
+    public static int getGridResolutionHeight = 774;
     public static int gridRows = getGridResolutionHeight/maxZoomOut;
     public static int gridCols = gridResolutionWidth/maxZoomOut;
     public static GameOfLifeControls controller = null;
