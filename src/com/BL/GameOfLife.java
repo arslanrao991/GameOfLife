@@ -1,4 +1,4 @@
-package com.company;
+package com.BL;
 import Factory.Constants;
 import javax.sound.sampled.*;
 import java.io.File;
@@ -11,11 +11,10 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     protected Grid grid;
     protected UIListenerOut uiController = null;
     protected DBInterfaceOut dbListener = null;
-    protected int counter;
     protected int zoom;
     protected int speed;
     protected boolean gameStatus;
-    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\company\\pinkPanther.wav");
+    File file = new File("C:\\Users\\myacc\\Data\\IdealProjects\\GameOfLife\\src\\com\\BL\\pinkPanther.wav");
     AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
     Clip clip = AudioSystem.getClip();
 
@@ -24,7 +23,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
         this.grid = new Grid();
         this.speed = Constants.currentSpeed;
         this.zoom = Constants.currentZoom;
-        this.counter = 0;
+        this.grid.generation = 0;
         clip.open(audioStream);
 
     }
@@ -43,7 +42,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     public void reset()
     {
         grid.reset();
-        counter=0;
+        this.grid.generation=0;
     }
 
     //BLListener UI
@@ -68,19 +67,18 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     public void next()
     {
         grid.next();
-        counter++;
     }
 
     @Override
     public void clear()
     {
         grid.clear();
-        counter=0;
+        this.grid.generation=0;
     }
     @Override
     public void setGeneration()
     {
-        counter=0;
+        this.grid.generation=0;
     }
 
     public void setZoom(int value)
@@ -113,7 +111,6 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
     @Override
     public void nextButtonClick()
     {
-        counter++;
         grid.next();
     }
     @Override
@@ -199,7 +196,7 @@ public class GameOfLife<audioStream> implements UIInterfaceIn, DBInterfaceIn
 
     @Override
     public int getGeneration() {
-        return counter;
+        return this.grid.generation;
     }
 
     public void addUIListener(UIListenerOut l)

@@ -1,13 +1,13 @@
 package UI;
 
 import Factory.Constants;
-import com.company.Grid;
+import com.BL.Grid;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-
+//used to view saved states
 public class Board2 extends JPanel implements ActionListener
 {
     GameOfLifeControls controls;
@@ -64,7 +64,7 @@ public class Board2 extends JPanel implements ActionListener
 
     private void drawGraphics(Graphics g)
     {
-        g.setColor(Color.yellow);
+        g.setColor(Color.pink);
 
         for(int x=0;x<yPanel/size;x++)
         {

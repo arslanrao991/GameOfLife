@@ -1,9 +1,9 @@
 package Database;
 
-import com.company.DBInterfaceIn;
-import com.company.Cell;
-import com.company.DBInterfaceOut;
-import com.company.GameOfLife;
+import com.BL.DBInterfaceIn;
+import com.BL.Cell;
+import com.BL.DBInterfaceOut;
+import com.BL.GameOfLife;
 
 import java.sql.*;
 import java.util.Enumeration;

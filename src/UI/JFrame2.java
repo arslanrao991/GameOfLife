@@ -1,6 +1,6 @@
 package UI;
 
-import com.company.Grid;
+import com.BL.Grid;
 
 import javax.swing.*;
 import java.awt.*;

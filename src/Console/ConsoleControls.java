@@ -1,6 +1,6 @@
 package Console;
-import com.company.GameOfLife;
-import com.company.UIInterfaceIn;
+import com.BL.GameOfLife;
+import com.BL.UIInterfaceIn;
 
 public class ConsoleControls
 {
@@ -9,15 +9,9 @@ public class ConsoleControls
     public ConsoleControls(GameOfLife gc)
     {
         this.gameControls = gc;
-        //this.gameControls.addUIListener(this);
     }
 
-    public void setGOLControls(GameOfLife g)
-    {
-        gameControls = g;
-    }
-
-    //BLListener
+    //UIInterfaceIN
     public int getCurrentZoom()
     {
         return this.gameControls.getZoom();
@@ -26,8 +20,6 @@ public class ConsoleControls
     {
         return this.gameControls.getSpeed();
     }
-
-    //CellGrid
     public void setCell(int x, int y, boolean status)
     {
         gameControls.setCell(x, y, status);

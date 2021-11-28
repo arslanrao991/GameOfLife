@@ -5,9 +5,10 @@ import java.awt.*;
 import java.awt.event.*;
 
 import Factory.Constants;
-import com.company.GameOfLife;
-import com.company.Grid;
+import com.BL.GameOfLife;
+import com.BL.Grid;
 
+//main board of game of life
 public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {
     GameOfLifeControls controls;
@@ -18,11 +19,8 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
     protected static final int originY = 0;
     protected static int size;
     protected static int delay;
-
-
     int xPanel, yPanel;
     public int startX, startY;
-
     boolean[][] life;
     boolean clicked = false;
 
@@ -81,8 +79,15 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
             {
                 try
                 {
-                    if(life[(x+startY)][(y+startX)])
-                        g.fillRect((1+y*size), (1+x*size), size-2, size-2);
+                    try
+                    {
+                        if (life[(x + startY)][(y + startX)])
+                            g.fillRect((1 + y * size), (1 + x * size), size - 2, size - 2);
+                    }
+                    catch (ArrayIndexOutOfBoundsException e)
+                    {
+                        // do nothing
+                    }
                 }
                 catch (ArrayIndexOutOfBoundsException e)
                 {
@@ -165,57 +170,66 @@ public class Board extends JPanel implements ActionListener, MouseListener, Mous
 
     public void mouseDragged(MouseEvent e)
     {
-        int x = (e.getX()/size)+startX;
-        int y = (e.getY()/size)+startY;
-        if(!controls.getCell(y, x) && clicked)
+        try
         {
-            controls.setCell(y, x, true);
-            //mouseClicked(e);
-        }
-        else if(controls.getCell(y, x) && !clicked)
-            controls.setCell(y, x, false);
+            int x = (e.getX() / size) + startX;
+            int y = (e.getY() / size) + startY;
+            if (!controls.getCell(y, x) && clicked) {
+                controls.setCell(y, x, true);
+                //mouseClicked(e);
+            } else if (controls.getCell(y, x) && !clicked)
+                controls.setCell(y, x, false);
 
-        repaint();
-        controls.gameControls.setGeneration();
-        updateBoard(controls.gameControls.getGrid());
+            repaint();
+            controls.gameControls.setGeneration();
+            updateBoard(controls.gameControls.getGrid());
+        }
+        catch (ArrayIndexOutOfBoundsException e3)
+        {
+            //do nothing
+        }
     }
     public void mouseMoved(MouseEvent e)
     {
-
+        //do nothing
     }
     synchronized public void mouseClicked(MouseEvent e)
     {
-
+        //do nothing
     }
     synchronized public void mousePressed(MouseEvent e)
     {
-        int x = (e.getX()/size)+startX;
-        int y = (e.getY()/size)+startY;
-        clicked = true;
-
-        if(!controls.getCell(y, x) && clicked)
+        try
         {
-            controls.setCell(y, x, true);
-        }
-        else if(controls.getCell(y, x))
-            controls.setCell(y, x, false);
+            int x = (e.getX() / size) + startX;
+            int y = (e.getY() / size) + startY;
+            clicked = true;
 
-        controls.gameControls.setGeneration();
-        updateBoard(controls.gameControls.getGrid());
+            if (!controls.getCell(y, x) && clicked) {
+                controls.setCell(y, x, true);
+            } else if (controls.getCell(y, x))
+                controls.setCell(y, x, false);
+
+            controls.gameControls.setGeneration();
+            updateBoard(controls.gameControls.getGrid());
+        }
+        catch (ArrayIndexOutOfBoundsException e2)
+        {
+            //do nothing
+        }
 
     }
     public void mouseReleased(MouseEvent e)
     {
         clicked = false;
-
     }
     public void mouseEntered(MouseEvent e)
     {
-
+        //do nothing
     }
     public void mouseExited(MouseEvent e)
     {
-
+        //do nothing
     }
 
 }

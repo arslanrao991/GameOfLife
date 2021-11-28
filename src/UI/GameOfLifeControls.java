@@ -1,5 +1,5 @@
 package UI;
-import com.company.*;
+import com.BL.*;
 
 
 public class GameOfLifeControls
@@ -9,7 +9,6 @@ public class GameOfLifeControls
     public GameOfLifeControls(GameOfLife gc)
     {
         this.gameControls = gc;
-        //this.gameControls.addUIListener(this);
     }
 
     public void setGOLControls(GameOfLife g)
@@ -17,7 +16,7 @@ public class GameOfLifeControls
         gameControls = g;
     }
 
-    //BLListener
+    //Sending request to BL
     public int getCurrentZoom()
     {
         return this.gameControls.getZoom();
@@ -26,8 +25,6 @@ public class GameOfLifeControls
     {
         return this.gameControls.getSpeed();
     }
-
-    //CellGrid
     public void setCell(int x, int y, boolean status)
     {
         gameControls.setCell(x, y, status);

@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import Factory.Constants;
-import com.company.GameOfLife;
-import com.company.Grid;
+import com.BL.GameOfLife;
+import com.BL.Grid;
 
 public class MainFrame
 {
@@ -48,7 +48,7 @@ public class MainFrame
                     3->Save State
                     4->Load State
                     5->Reset/Clear
-                    6->Enter Input\s
+                    6->Enter Input
                     7->Exit
                     8->Next State
                     9->Delete State
@@ -118,7 +118,6 @@ public class MainFrame
                 else
                     System.out.print(" . ");
 
-                //System.out.print(".");
             }
             System.out.print(" \n");
         }

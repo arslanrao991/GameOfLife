@@ -7,12 +7,12 @@ import java.awt.event.WindowEvent;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-public class nameDialogBox
+public class NameDialogBox
 {
     JFrame f1;
     JLabel l1;
     String input_value;
-    public nameDialogBox()
+    public NameDialogBox()
     {
         f1 = new JFrame();
         input_value = JOptionPane.showInputDialog(" start entering your value!","Shape1");

@@ -1,8 +1,9 @@
 import Console.MainFrame;
+import Database.MYSQLDB;
 import Database.TextDB;
 import Factory.Constants;
 import UI.GameOfLifeFrame;
-import com.company.GameOfLife;
+import com.BL.GameOfLife;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -12,13 +13,13 @@ public class main
 {
     public static void main(String[] args) throws InterruptedException, UnsupportedAudioFileException, LineUnavailableException, IOException
     {
-        Constants c = new Constants();
+        new Constants();
         GameOfLife game = new GameOfLife();
 
-        TextDB db = new TextDB(game);
-        //MYSQLDB db = new MYSQLDB(game);
+        new MYSQLDB(game);
+        //new TextDB(game);
 
-        MainFrame console = new MainFrame(game);
-        //GameOfLifeFrame f = new GameOfLifeFrame(game);
+        new GameOfLifeFrame(game);
+        //new MainFrame(game);
     }
 }

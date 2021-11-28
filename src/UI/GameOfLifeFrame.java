@@ -1,8 +1,8 @@
 package UI;
 
 import Factory.Constants;
-import com.company.GameOfLife;
-import com.company.Grid;
+import com.BL.GameOfLife;
+import com.BL.Grid;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -42,10 +42,8 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         setUndecorated(true);
         setVisible(true);
 
-        /TimeUnit.MILLISECONDS.sleep(1200);
+        TimeUnit.MILLISECONDS.sleep(1200);
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));*/
-
-
 
 
         f.setBackground(Color.blue);
@@ -366,7 +364,7 @@ public class GameOfLifeFrame extends JFrame implements KeyListener, ActionListen
         }
         else if(e.getSource() == saveStateBtn)
         {
-            nameDialogBox box = new nameDialogBox();
+            NameDialogBox box = new NameDialogBox();
             String stateName = null;
             stateName = box.get_string();
             if(stateName!=null)

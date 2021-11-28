@@ -1,4 +1,4 @@
-package com.company;
+package com.BL;
 public class Cell
 {
     public int x_axis;

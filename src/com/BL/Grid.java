@@ -1,4 +1,4 @@
-package com.company;
+package com.BL;
 import java.util.*;
 import Factory.Constants;
 
@@ -10,7 +10,7 @@ public class Grid
     protected Hashtable currentShape; //stores alive cells
     protected Hashtable newShape; //stores new alive cells after counter
     protected Cell[][] initialShape;
-    protected boolean savedInitialState;
+    protected boolean savedInitialState;    //store initial shape when start button is clicked
     protected  int generation;
 
     public Grid()
@@ -168,6 +168,7 @@ public class Grid
         }
     }
 
+    //save initial shape to reset during game play
     public void saveInitialShape()
     {
         Cell c;

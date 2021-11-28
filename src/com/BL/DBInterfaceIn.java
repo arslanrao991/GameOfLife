@@ -1,4 +1,4 @@
-package com.company;
+package com.BL;
 
 public interface DBInterfaceIn
 {
