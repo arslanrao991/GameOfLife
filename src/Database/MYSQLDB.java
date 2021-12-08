@@ -1,11 +1,13 @@
+//MYSQL DB stores data in tables using sql
 package Database;
 
-import com.BL.DBInterfaceIn;
-import com.BL.Cell;
-import com.BL.DBInterfaceOut;
-import com.BL.GameOfLife;
+import BLLayer.DBInterfaceIn;
+import BLLayer.Cell;
+import BLLayer.DBInterfaceOut;
+import BLLayer.GameOfLife;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -34,11 +36,9 @@ public class MYSQLDB implements DBInterfaceOut
         }
     }
 
-    public void saveState(Hashtable<Cell, Cell> hashtable , String name)     //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
+    public void saveState(int[][] activeCells , String name)     //GETTING HASHTABLE AND ADDING X AND Y AXIS TO DATABASE
     {
-        Cell cell;
         Connection();                                            //CREATING CONNECTION BETWEEN MYSQL AND JAVA
-        Enumeration e = hashtable.elements();                    //USE FOR ITERATING HASHTABLE
         int x_axis, y_axis;
 
         String sql = "Insert Into StateName Values ('" + name +  "')";
@@ -51,13 +51,10 @@ public class MYSQLDB implements DBInterfaceOut
         {
             throwable.printStackTrace();
         }
-
-        while (e.hasMoreElements())                               //ITERATING ELEMENTS IN HASHTABLE
+        for(int i=0;i<activeCells.length;i++)
         {
-            cell = (Cell) e.nextElement();
-            x_axis = cell.x_axis;
-            y_axis = cell.y_axis;
-
+            x_axis = activeCells[i][0];
+            y_axis = activeCells[i][1];
             sql = "Insert Into CELLS (X_Axis,Y_Axis,Name) Values ('" + x_axis + "','" + y_axis + "','"+name+"')";  //RUN THE SQL COMMAND
             try
             {
@@ -69,6 +66,7 @@ public class MYSQLDB implements DBInterfaceOut
                 ex.printStackTrace();
             }
         }
+
     }
 
 
@@ -96,11 +94,11 @@ public class MYSQLDB implements DBInterfaceOut
     }
 
     @Override
-    public Hashtable<Cell, Cell> loadState(String name)
+    public ArrayList<int[][]> loadState(String name)
     {
-        Cell cell;
+        ArrayList<int[][]> activeCells = new ArrayList<>();
+        int[][] cell;
         Connection();
-        Hashtable<Cell, Cell> ht = new Hashtable<>();     //CREATES A HASHTABLE FOR RETURNING TO BL
         String sql = "SELECT * from CELLS where Name='"+ name +"'";                                                   // CALLING LoadState() TO RETRIEVE THE DATA FROM MYSQL
         try
         {
@@ -108,24 +106,26 @@ public class MYSQLDB implements DBInterfaceOut
             ResultSet RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                cell = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
-                ht.put(cell, cell);
+                cell = new int[1][2];
+                cell[0][0] = RT.getInt("X_Axis");
+                cell[0][1] = RT.getInt("Y_Axis");
+                activeCells.add(cell);
             }
         }
         catch (SQLException throwable)
         {
             throwable.printStackTrace();
         }
-        return ht;
+        return activeCells;
     }
 
 
-    public Hashtable<Cell, Cell> loadRecentState()
+    public ArrayList<int[][]> loadRecentState()
     {
-        Cell cell;
+        ArrayList<int[][]> activeCells = new ArrayList<>();
+        int[][] cell;
         Connection();
         String names;
-        Hashtable<Cell, Cell> ht = new Hashtable<>();     //CREATES A HASHTABLE FOR SAVING STATE
         String sql = "SELECT * from CELLS order by Id DESC LIMIT 1,1";
 
         try
@@ -133,7 +133,7 @@ public class MYSQLDB implements DBInterfaceOut
             Statement statement = connect.createStatement();
             ResultSet RT = statement.executeQuery(sql);
             if(!RT.next())
-                return ht;
+                return activeCells;
 
             names = RT.getString("Name");
 
@@ -141,15 +141,17 @@ public class MYSQLDB implements DBInterfaceOut
             RT = statement.executeQuery(sql);
             while (RT.next())                                      //GETTING DATA FROM COLUMNS AND PLACING IN HASHTABLE
             {
-                cell = new Cell(RT.getInt("X_Axis"), RT.getInt("Y_Axis"));
-                ht.put(cell, cell);
+                cell = new int[1][2];
+                cell[0][0] = RT.getInt("X_Axis");
+                cell[0][1] = RT.getInt("Y_Axis");
+                activeCells.add(cell);
             }
         }
         catch (SQLException throwable)
         {
             throwable.printStackTrace();
         }
-        return ht;
+        return activeCells;
     }
 
 

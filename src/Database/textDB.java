@@ -1,12 +1,12 @@
+//Text DB stores data in text files
 package Database;
 
-import com.BL.Cell;
-import com.BL.DBInterfaceIn;
-import com.BL.DBInterfaceOut;
-import com.BL.GameOfLife;
+import BLLayer.Cell;
+import BLLayer.DBInterfaceIn;
+import BLLayer.DBInterfaceOut;
+import BLLayer.GameOfLife;
 import java.io.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.ArrayList;
 
 
 public class TextDB implements DBInterfaceOut
@@ -88,12 +88,13 @@ public class TextDB implements DBInterfaceOut
         File obj = new File(name);
         obj.delete();
     }
-    public void saveState(Hashtable ht,String name)                 //SAVE STATE IN FILE
+    public void saveState(int[][] activeCells,String name)                 //SAVE STATE IN FILE
     {
+        //int[][] activeCells = new int[10][2];
         Cell cell;
         File file_obj = new File("SaveStates.txt");
         BufferedWriter out;
-        Enumeration e = ht.elements();
+        //Enumeration e = ht.elements();
         int x_axis,y_axis;
         try
         {
@@ -134,7 +135,17 @@ public class TextDB implements DBInterfaceOut
         try
         {
             out = new BufferedWriter(new FileWriter(name+".txt"));
-            while(e.hasMoreElements())                                     //WRITING TO TEXT FILE ALL HASHTABLE
+            for(int i=0;i<activeCells.length;i++)
+            {
+                x_axis = activeCells[i][0];
+                y_axis = activeCells[i][1];
+                out.write(String.valueOf(x_axis));
+                out.append(',');
+                out.write(String.valueOf(y_axis));
+                out.append('\n');
+            }
+
+            /*while(e.hasMoreElements())                                     //WRITING TO TEXT FILE ALL HASHTABLE
             {
                 cell = (Cell) e.nextElement();
 
@@ -145,7 +156,7 @@ public class TextDB implements DBInterfaceOut
                 out.append(',');
                 out.write(String.valueOf(y_axis));
                 out.append('\n');
-            }
+            }*/
             out.close();
         }
         catch (IOException exp2)
@@ -154,17 +165,19 @@ public class TextDB implements DBInterfaceOut
             exp2.printStackTrace();
         }
     }
-    public  Hashtable<Cell, Cell> loadRecentState()
+    public  ArrayList<int[][]> loadRecentState()
     {
+        ArrayList<int[][]> activeCells = new ArrayList<>();
+        int[][] cell;
         BufferedReader br;
-        Hashtable<Cell, Cell> ht =new Hashtable<>();
+        //Hashtable<Cell, Cell> ht =new Hashtable<>();
         String data,recentSavedFile=null;
         int x_Axis = 0, y_Axis=0, val=0;
         int[] array1 = new int[200];
         File f = new File("SaveStates.txt");
         if(!f.exists() )
         {
-            return ht;
+            return activeCells;
         }
         try
         {
@@ -180,7 +193,7 @@ public class TextDB implements DBInterfaceOut
             e.printStackTrace();
         }
         if(recentSavedFile==null)
-            return ht;
+            return activeCells;
         try
         {
             br = new BufferedReader(new FileReader(recentSavedFile));
@@ -208,8 +221,11 @@ public class TextDB implements DBInterfaceOut
                         val = 0;
                     }
                 }
-                Cell c = new Cell(x_Axis, y_Axis);                                       //Storing IN HASHTABLE
-                ht.put(c,c);
+                cell = new int[1][2];
+                cell[0][0] = x_Axis;
+                cell[0][1] = y_Axis;
+
+                activeCells.add(cell);
                 val = 0;
                 x_Axis = 0;
                 y_Axis = 0;
@@ -225,7 +241,7 @@ public class TextDB implements DBInterfaceOut
         {
             e.printStackTrace();
         }
-        return ht;
+        return activeCells;
     }
     public String[] getStates()
     {
@@ -258,12 +274,13 @@ public class TextDB implements DBInterfaceOut
         return statesName;
     }
 
-    public Hashtable<Cell, Cell> loadState(String Name)
+    public ArrayList<int[][]> loadState(String Name)
     {
+        ArrayList<int[][]> activeCells = new ArrayList<>();
+        int[][] cell;
         BufferedReader br;
-        Hashtable<Cell,Cell> ht =new Hashtable<>();
         String data;
-        int X_Axis = 0,Y_Axis=0,val=0;
+        int x_Axis = 0,y_Axis=0,val=0;
         int[] array1 = new int[200];
         try
         {
@@ -274,8 +291,9 @@ public class TextDB implements DBInterfaceOut
                 {
                     if(i==data.length())
                     {
-                        for (int j = 0; j < val; j++) {
-                            Y_Axis = 10 * Y_Axis + array1[j];
+                        for (int j = 0; j < val; j++)
+                        {
+                            y_Axis = 10 * y_Axis + array1[j];
                         }
                         break;
                     }
@@ -287,17 +305,19 @@ public class TextDB implements DBInterfaceOut
                     else if(data.charAt(i) == ',' )
                     {
                         for (int j = 0; j < val; j++) {
-                            X_Axis = 10 * X_Axis + array1[j];
+                            x_Axis = 10 * x_Axis + array1[j];
                         }
                         val = 0;
                     }
                 }
-                Cell c = new Cell(X_Axis, Y_Axis);
+                cell = new int[1][2];
+                cell[0][0] = x_Axis;
+                cell[0][1] = y_Axis;
 
-                ht.put(c,c);
+                activeCells.add(cell);
                 val = 0;
-                X_Axis = 0;
-                Y_Axis = 0;
+                x_Axis = 0;
+                y_Axis = 0;
             }
             br.close();
         }
@@ -309,6 +329,6 @@ public class TextDB implements DBInterfaceOut
         {
             e.printStackTrace();
         }
-        return ht;
+        return activeCells;
     }
 }

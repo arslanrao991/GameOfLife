@@ -1,17 +1,17 @@
 --How to run project?
-	1- Uncomment the UI and DB which you want to use in project (from main)
+	1- Uncomment the JavaSwing and DB which you want to use in project (from main)
 	   Select any one from both options given below:
 
 		new MYSQLDB(game); (MYSQL DB)
         	new TextDB(game);  (Text Files DB)
 
 		new GameOfLifeFrame(game); (Java swing)
-        	new MainFrame(game); (Console UI)
+        	new MainFrame(game); (Console JavaSwing)
 
 	2- Compile the project and run main.java
 		
 
---Game Of Life contains 2 UI Interfaces which are as following:
+--Game Of Life contains 2 JavaSwing Interfaces which are as following:
 	1- GUI (Java Swing Interface)
 	2- Console (Terminal Interface requires keyboard to interact with game)
 

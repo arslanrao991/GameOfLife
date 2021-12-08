@@ -1,9 +1,7 @@
-import Console.MainFrame;
 import Database.MYSQLDB;
-import Database.TextDB;
 import Factory.Constants;
-import UI.GameOfLifeFrame;
-import com.BL.GameOfLife;
+import BLLayer.GameOfLife;
+import JavaSwing.GameOfLifeFrame;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -20,6 +18,6 @@ public class main
         //new TextDB(game);
 
         new GameOfLifeFrame(game);
-        //new MainFrame(game);
+        //new CLIInterface(game);
     }
 }
